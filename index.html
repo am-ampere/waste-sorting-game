@@ -18,7 +18,7 @@
       min-height: 100vh; 
       display: flex; 
       flex-direction: column; 
-      justify-content: center; 
+      justify-content: center; /* จัดให้อยู่กึ่งกลางแนวตั้งเสมอ */
       align-items: center; 
       text-align: center;
       padding: 20px;
@@ -27,10 +27,9 @@
     }
     .hidden { display: none !important; }
     
-    /* ปรับแต่งหน้าสุดท้ายให้ต่ำลงมาในระดับที่พอดี */
-    #end {
-      justify-content: flex-start; 
-      padding-top: 25vh; /* ปรับจาก 15vh เป็น 25vh เพื่อให้ต่ำลงมานิดหน่อย */
+    /* ปรับจูนระยะหน้าแรกและหน้าสุดท้ายให้สมดุลกับหน้าคำถาม */
+    #start, #end {
+      padding-bottom: 60px; /* ดันเนื้อหาขึ้นเล็กน้อยเพื่อให้ดูบาลานซ์ ไม่จมลงล่างเกินไป */
     }
 
     .title-emoji { font-size: 4rem; margin-bottom: 10px; }
@@ -81,7 +80,6 @@
       max-width: 160px; 
     }
 
-    /* สไตล์สำหรับคำว่า เก่งมากกกก!! */
     .highlight-text {
       font-size: 2.8rem; 
       font-weight: 700; 
@@ -145,9 +143,7 @@
         document.getElementById("loading").classList.add("hidden");
         document.getElementById("start").classList.remove("hidden");
       }
-    } catch (err) {
-      console.error(err);
-    }
+    } catch (err) { console.error(err); }
   }
 
   window.onload = init;
@@ -177,7 +173,6 @@
   function check(index, btn) {
     const buttons = document.querySelectorAll("#choices .btn");
     buttons.forEach(b => b.disabled = true);
-
     const correctIndex = questions[current].answer;
     const isCorrect = (index === correctIndex);
     userResponses.push(questions[current].choices[index]);
@@ -195,9 +190,8 @@
     
     setTimeout(() => {
       current++;
-      if (current < questions.length) {
-        showQuestion();
-      } else {
+      if (current < questions.length) { showQuestion(); }
+      else {
         document.getElementById("game").classList.add("hidden");
         document.getElementById("finalScoreDisplay").innerText = "คุณ " + playerName + " ทำคะแนนได้ " + score + "/" + questions.length;
         document.getElementById("end").classList.remove("hidden");
