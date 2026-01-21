@@ -12,7 +12,7 @@
       font-family: 'Prompt', sans-serif; 
       background: linear-gradient(135deg, #e9f7ef 0%, #b2d8c1 100%); 
       color: #1e5c3a; 
-      font-size: 18px; /* ปรับขนาดฟอนต์พื้นฐานให้ใหญ่ขึ้นตามต้องการ */
+      font-size: 18px;
     }
     .container { 
       min-height: 100vh; 
@@ -27,7 +27,13 @@
     }
     .hidden { display: none !important; }
     
-    .title-emoji { font-size: 3.5rem; margin-bottom: 10px; }
+    /* ปรับแต่งหน้าสุดท้ายเป็นพิเศษ */
+    #end {
+      justify-content: flex-start; /* เปลี่ยนจาก center เป็นชิดบน */
+      padding-top: 15vh; /* ดันลงมาจากขอบบนเล็กน้อยเพื่อให้ตำแหน่งอยู่ช่วงบนของจอ */
+    }
+
+    .title-emoji { font-size: 4rem; margin-bottom: 10px; }
     .title-text { font-size: 1.8rem; line-height: 1.4; margin-bottom: 30px; font-weight: 700; }
 
     .btn { 
@@ -39,7 +45,7 @@
       border: none; 
       background: #fff; 
       font-family: 'Prompt', sans-serif; 
-      font-size: 1.2rem; /* ปรับขนาดฟอนต์ปุ่ม */
+      font-size: 1.2rem; 
       font-weight: 600;
       color: #2e7d32; 
       box-shadow: 0 4px 10px rgba(0,0,0,0.1); 
@@ -50,7 +56,7 @@
     .btn.wrong { background: #e53935 !important; color: #fff; }
     
     .question { 
-      font-size: 1.5rem; /* ปรับฟอนต์คำถามให้ใหญ่ขึ้น */
+      font-size: 1.5rem; 
       font-weight: 600; 
       margin-bottom: 25px; 
       background: rgba(255,255,255,0.5); 
@@ -65,15 +71,23 @@
       font-size: 1.2rem; 
       font-weight: bold; 
       min-height: 50px; 
-      color: #b71c1c; /* สีข้อความเฉลย */
     }
 
     .logo-footer { 
       position: absolute; 
-      bottom: 30px; 
+      bottom: 40px; 
       left: 50%; 
       transform: translateX(-50%); 
       max-width: 160px; 
+    }
+
+    /* สไตล์พิเศษสำหรับคำว่า เก่งมาก! */
+    .highlight-text {
+      font-size: 2.8rem; 
+      font-weight: 700; 
+      margin: 10px 0;
+      color: #1e5c3a;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
     }
   </style>
 </head>
@@ -99,9 +113,10 @@
 </div>
 
 <div id="end" class="container hidden">
-  <div class="title-emoji">🥳</div> <h1 style="font-size: 2.2rem; margin-bottom: 10px;">เก่งมาก!</h1>
-  <p id="finalScoreDisplay" style="font-size: 1.6rem; font-weight: bold; margin: 10px 0;"></p>
-  <p style="font-size: 1.3rem;">ทุกการแยกขยะ = 1 ครั้งที่ช่วยโลก 🌍💚</p>
+  <div class="title-emoji">🥳</div> 
+  <div class="highlight-text">เก่งมาก!</div>
+  <p id="finalScoreDisplay" style="font-size: 1.6rem; font-weight: bold; margin: 15px 0;"></p>
+  <p style="font-size: 1.3rem; margin-top: 5px;">ทุกการแยกขยะ = 1 ครั้งที่ช่วยโลก 🌍💚</p>
   <img class="logo-footer" src="https://www.advancebio11.com/wp-content/uploads/2025/07/New-Advance-BIO_s-logo-430x121_result.webp">
 </div>
 
@@ -175,7 +190,6 @@
     } else {
       btn.classList.add("wrong");
       document.getElementById("message").style.color = "#b71c1c";
-      // เพิ่มส่วนเฉลยคำตอบที่ถูก
       document.getElementById("message").innerText = "ผิดแล้ว! ข้อที่ถูกคือ: " + questions[current].choices[correctIndex];
     }
     
@@ -189,13 +203,8 @@
         document.getElementById("end").classList.remove("hidden");
         sendData();
       }
-    }, 2000); // เพิ่มเวลาให้คนอ่านเฉลยหน่อยเป็น 2 วินาที
+    }, 2000); 
   }
 
   function sendData() {
-    const data = { name: playerName, totalScore: score, details: userResponses };
-    fetch(WEB_APP_URL, { method: "POST", mode: "no-cors", body: JSON.stringify(data) });
-  }
-</script>
-</body>
-</html>
+    const data = { name: playerName
