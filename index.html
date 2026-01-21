@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>แยกขยะรักษ์โลก</title>
+  <style>
+    /* CSS เดิมทั้งหมดของคุณ */
+    body { margin: 0; font-family: sans-serif; background: #e9f7ef; color: #1e5c3a; }
+    .container { min-height: 100vh; padding: 20px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; }
+    .hidden { display: none !important; }
+    .title-emoji { font-size: 2.8rem; }
+    .title-text { font-size: 2.1rem; margin-bottom: 24px; }
+    .btn { width: 100%; max-width: 340px; padding: 14px; margin: 8px 0; border-radius: 14px; border: none; background: #ffffff; cursor: pointer; font-size: 1.2rem; box-shadow: 0 3px 6px rgba(0,0,0,0.1); }
+    .btn.correct { background: #4caf50; color: #fff; }
+    .btn.wrong { background: #f44336; color: #fff; }
+    .question { font-size: 1.5rem; margin-bottom: 20px; }
+    .message { margin-top: 16px; min-height: 32px; }
+    .logo { max-width: 160px; margin: 12px 0; }
+    input { padding: 12px; border-radius: 10px; border: 1px solid #ccc; width: 280px; margin-bottom: 15px; font-size: 1rem; }
+  </style>
+</head>
+<body>
+
+<div id="register" class="container">
+  <div class="title-emoji">🌍</div>
+  <div class="title-text">ยินดีต้อนรับ!<br>ขอทราบชื่อของคุณก่อนเริ่มเล่น</div>
+  <input type="text" id="playerName" placeholder="พิมพ์ชื่อของคุณที่นี่">
+  <button class="btn" onclick="startWithRegister()">เข้าสู่เกม 🚀</button>
+</div>
+
+<div id="start" class="container hidden">
+  <div class="title-emoji">🗑️♻️</div>
+  <div class="title-text">แยกให้ดี<br>ขยะนี้ควรทิ้งถังไหน?</div>
+  <button class="btn" onclick="startGame()">เริ่มเล่น 🌍</button>
+</div>
+
+<div id="game" class="container hidden">
+  <div id="question" class="question"></div>
+  <div id="choices"></div>
+  <div id="message" class="message"></div>
+</div>
+
+<div id="end" class="container hidden">
+  <h1>🎉 เก่งมาก!</h1>
+  <p id="finalScoreDisplay"></p>
+  <p>ทุกการแยกขยะ = 1 ครั้งที่ช่วยโลก 🌍💚</p>
+  <img class="logo" src="https://www.advancebio11.com/wp-content/uploads/2025/07/New-Advance-BIO_s-logo-430x121_result.webp" alt="Logo">
+  <br>
+  <a href="https://lin.ee/9I8XlM7" target="_blank">
+    <img style="max-width:200px;" src="https://drive.google.com/uc?export=view&id=1fBN0BzUOyKKCiJk06VacK2dsyrPx5sb7" alt="Add Line">
+  </a>
+</div>
+
+<script>
+  // อย่าลืมเอา URL จาก Google Apps Script มาใส่ตรงนี้นะครับ!
+  const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzeoyz1cTR4lW4NE-HkUYLia2J2Xw9TFfIUp7j-8tmEQTrKIjSP1P9FaFVXecuZr7Ux/exec"; 
+
+  const questions = [
+    { text: "🧴 ขวดน้ำพลาสติกควรทิ้งถังไหน?", choices: ["♻️ ถังรีไซเคิล", "🔵 ถังขยะทั่วไป", "🍃 ถังขยะเปียก"], answer: 0 },
+    { text: "🍌 เปลือกกล้วยควรทิ้งถังไหน?", choices: ["♻️ ถังรีไซเคิล", "🍃 ถังขยะเปียก", "🔵 ถังขยะทั่วไป"], answer: 1 },
+    { text: "🥤 ดื่มน้ำหมดแล้วควรทำอย่างไร?", choices: ["🚮 ทิ้งทั้งแก้ว", "🧊 เทน้ำออกแล้วรีไซเคิล", "🍃 ทิ้งลงขยะเปียก"], answer: 1 }
+  ];
+
+  let playerName = "";
+  let userResponses = [];
+  let score = 0;
+  let current = 0;
+
+  function hideAll() {
+    document.getElementById("register").classList.add("hidden");
+    document.getElementById("start").classList.add("hidden");
+    document.getElementById("game").classList.add("hidden");
+    document.getElementById("end").classList.add("hidden");
+  }
+
+  function startWithRegister() {
+    playerName = document.getElementById("playerName").value;
+    if (!playerName) { alert("กรุณากรอกชื่อด้วยนะจ๊ะ"); return; }
+    hideAll();
+    document.getElementById("start").classList.remove("hidden");
+  }
+
+  function startGame() {
+    hideAll();
+    current = 0;
+    score = 0;
+    userResponses = [];
+    document.getElementById("game").classList.remove("hidden");
+    showQuestion();
+  }
+
+  function showQuestion() {
+    const q = questions[current];
+    document.getElementById("question").innerText = q.text;
+    const choicesDiv = document.getElementById("choices");
+    choicesDiv.innerHTML = "";
+    document.getElementById("message").innerText = "";
+
+    q.choices.forEach((choice, index) => {
+      const btn = document.createElement("button");
+      btn.className = "btn";
+      btn.innerText = choice;
+      btn.onclick = () => checkAnswer(index, btn);
+      choicesDiv.appendChild(btn);
+    });
+  }
+
+  function checkAnswer(index, btn) {
+    const isCorrect = (index === questions[current].answer);
+    userResponses.push({
+        userAnswer: questions[current].choices[index],
+        isCorrect: isCorrect
+    });
+
+    if (isCorrect) {
+      score++;
+      btn.classList.add("correct");
+      document.getElementById("message").innerText = "ถูกต้อง! 🌱";
+      setTimeout(nextQuestion, 800);
+    } else {
+      btn.classList.add("wrong");
+      document.getElementById("message").innerText = "ลองใหม่นะ โลกให้กำลังใจ 🌍💚";
+    }
+  }
+
+  function nextQuestion() {
+    current++;
+    if (current < questions.length) {
+      showQuestion();
+    } else {
+      sendData();
+      hideAll();
+      document.getElementById("finalScoreDisplay").innerText = "คุณ " + playerName + " ทำคะแนนได้ " + score + "/" + questions.length;
+      document.getElementById("end").classList.remove("hidden");
+    }
+  }
+
+  function sendData() {
+    const data = { name: playerName, totalScore: score, details: userResponses };
+    fetch(WEB_APP_URL, {
+      method: "POST",
+      mode: "no-cors",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data)
+    });
+  }
+</script>
+</body>
+</html>
