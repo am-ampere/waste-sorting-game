@@ -12,7 +12,7 @@
       font-family: 'Prompt', sans-serif; 
       background: linear-gradient(135deg, #e9f7ef 0%, #b2d8c1 100%); 
       color: #1e5c3a; 
-      font-size: 16px;
+      font-size: 18px; /* ปรับขนาดฟอนต์พื้นฐานให้ใหญ่ขึ้นตามต้องการ */
     }
     .container { 
       min-height: 100vh; 
@@ -23,48 +23,87 @@
       text-align: center;
       padding: 20px;
       box-sizing: border-box;
+      position: relative;
     }
     .hidden { display: none !important; }
+    
+    .title-emoji { font-size: 3.5rem; margin-bottom: 10px; }
+    .title-text { font-size: 1.8rem; line-height: 1.4; margin-bottom: 30px; font-weight: 700; }
+
     .btn { 
-      width: 100%; max-width: 320px; padding: 14px; margin: 8px 0; 
-      border-radius: 50px; border: none; background: #fff; 
-      font-family: 'Prompt', sans-serif; font-size: 1.1rem; font-weight: 600;
-      color: #2e7d32; box-shadow: 0 4px 10px rgba(0,0,0,0.1); cursor: pointer;
+      width: 100%; 
+      max-width: 320px; 
+      padding: 16px; 
+      margin: 10px 0; 
+      border-radius: 50px; 
+      border: none; 
+      background: #fff; 
+      font-family: 'Prompt', sans-serif; 
+      font-size: 1.2rem; /* ปรับขนาดฟอนต์ปุ่ม */
+      font-weight: 600;
+      color: #2e7d32; 
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1); 
+      cursor: pointer;
+      transition: 0.3s;
     }
     .btn.correct { background: #43a047 !important; color: #fff; }
     .btn.wrong { background: #e53935 !important; color: #fff; }
+    
     .question { 
-      font-size: 1.3rem; font-weight: 600; margin-bottom: 20px; 
-      background: rgba(255,255,255,0.5); padding: 20px; border-radius: 20px; width: 100%; max-width: 360px;
+      font-size: 1.5rem; /* ปรับฟอนต์คำถามให้ใหญ่ขึ้น */
+      font-weight: 600; 
+      margin-bottom: 25px; 
+      background: rgba(255,255,255,0.5); 
+      padding: 25px; 
+      border-radius: 20px; 
+      width: 100%; 
+      max-width: 380px;
     }
-    .logo-footer { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); max-width: 140px; }
+    
+    .message { 
+      margin-top: 20px; 
+      font-size: 1.2rem; 
+      font-weight: bold; 
+      min-height: 50px; 
+      color: #b71c1c; /* สีข้อความเฉลย */
+    }
+
+    .logo-footer { 
+      position: absolute; 
+      bottom: 30px; 
+      left: 50%; 
+      transform: translateX(-50%); 
+      max-width: 160px; 
+    }
   </style>
 </head>
 <body>
 
 <div id="loading" class="container">
-  <p>⌛ กำลังเตรียมความพร้อมเพื่อโลกสีเขียว...</p>
+  <div class="title-emoji">⌛</div>
+  <p style="font-size: 1.3rem;">กำลังเตรียมความพร้อมเพื่อโลกสีเขียว...</p>
 </div>
 
 <div id="start" class="container hidden">
-  <h1 style="font-size: 1.8rem;">สวัสดีคุณ <span id="display-name"></span></h1>
-  <p style="font-size: 1.2rem;">ขยะนี้ควรทิ้งถังไหน?</p>
+  <div class="title-emoji">🗑️♻️</div>
+  <h1 class="title-text">สวัสดีคุณ <span id="display-name"></span><br>ขยะนี้ควรทิ้งถังไหน?</h1>
   <button class="btn" onclick="startGame()">เริ่มเล่น 🌍</button>
+  <img class="logo-footer" src="https://www.advancebio11.com/wp-content/uploads/2025/07/New-Advance-BIO_s-logo-430x121_result.webp">
 </div>
 
 <div id="game" class="container hidden">
   <div id="question" class="question"></div>
   <div id="choices"></div>
-  <div id="message" style="margin-top:15px; font-weight:bold;"></div>
+  <div id="message" class="message"></div>
+  <img class="logo-footer" src="https://www.advancebio11.com/wp-content/uploads/2025/07/New-Advance-BIO_s-logo-430x121_result.webp">
 </div>
 
 <div id="end" class="container hidden">
-  <h1 style="font-size: 2rem;">เก่งมาก!</h1>
-  <p id="finalScoreDisplay" style="font-size: 1.5rem; font-weight: bold;"></p>
-  <p>ทุกการแยกขยะ = 1 ครั้งที่ช่วยโลก 🌍💚</p>
+  <div class="title-emoji">🥳</div> <h1 style="font-size: 2.2rem; margin-bottom: 10px;">เก่งมาก!</h1>
+  <p id="finalScoreDisplay" style="font-size: 1.6rem; font-weight: bold; margin: 10px 0;"></p>
+  <p style="font-size: 1.3rem;">ทุกการแยกขยะ = 1 ครั้งที่ช่วยโลก 🌍💚</p>
+  <img class="logo-footer" src="https://www.advancebio11.com/wp-content/uploads/2025/07/New-Advance-BIO_s-logo-430x121_result.webp">
 </div>
-
-<img class="logo-footer" src="https://www.advancebio11.com/wp-content/uploads/2025/07/New-Advance-BIO_s-logo-430x121_result.webp">
 
 <script>
   const MY_LIFF_ID = "2008938028-gCqozVV5"; 
@@ -72,14 +111,13 @@
 
   const questions = [
     { text: "🧴 ขวดน้ำพลาสติกควรทิ้งถังไหน?", choices: ["♻️ ถังรีไซเคิล", "🔵 ถังขยะทั่วไป", "🍃 ถังซัมจั๋ง"], answer: 0 },
-    { text: "🍡 ไม้เสียบลูกชิ้นทิ้งยังไง?", choices: ["🔵 เสียบคนข้างๆ", "🔴 เสียบหลังทะลุหัวใจ", "🟤 ทิ้งลงถังไม้เสียบ"], answer: 2 },
     { text: "🥤 น้ำหมดน้ำแข็งไม่หมดทำยังไง?", choices: ["🚮 ทิ้งด้วยกันไปเลย", "🧊 แยกทิ้งน้ำแข็งและแก้ว", "🍃 กินแก้วลงไป"], answer: 1 },
+    { text: "🍡 ไม้เสียบลูกชิ้นทิ้งยังไง?", choices: ["🔵 เสียบคนข้างๆ", "🔴 เสียบหลังทะลุหัวใจ", "🟤 ทิ้งลงถังไม้เสียบ"], answer: 2 },
     { text: "🥕 ขยะเศษอาหารทิ้งยังไง?", choices: ["🟡 เทใส่ถ้วยเพื่อน", "🟤 เขวี้ยงลงพื้น", "🟢 ถังขยะเศษอาหาร"], answer: 2 }
   ];
 
   let playerName = "", score = 0, current = 0, userResponses = [];
 
-  // ฟังก์ชันเริ่มต้น LIFF
   async function init() {
     try {
       await liff.init({ liffId: MY_LIFF_ID });
@@ -89,13 +127,11 @@
         const profile = await liff.getProfile();
         playerName = profile.displayName;
         document.getElementById("display-name").innerText = playerName;
-        
-        // ซ่อนหน้าโหลด และโชว์หน้าเริ่มเกม
         document.getElementById("loading").classList.add("hidden");
         document.getElementById("start").classList.remove("hidden");
       }
     } catch (err) {
-      alert("LIFF Error: " + err.message);
+      console.error(err);
     }
   }
 
@@ -127,16 +163,20 @@
     const buttons = document.querySelectorAll("#choices .btn");
     buttons.forEach(b => b.disabled = true);
 
-    const isCorrect = (index === questions[current].answer);
+    const correctIndex = questions[current].answer;
+    const isCorrect = (index === correctIndex);
     userResponses.push(questions[current].choices[index]);
 
     if (isCorrect) {
       score++;
       btn.classList.add("correct");
+      document.getElementById("message").style.color = "#2e7d32";
       document.getElementById("message").innerText = "ถูกต้อง! 🌱";
     } else {
       btn.classList.add("wrong");
-      document.getElementById("message").innerText = "ผิดแล้วจ้า!";
+      document.getElementById("message").style.color = "#b71c1c";
+      // เพิ่มส่วนเฉลยคำตอบที่ถูก
+      document.getElementById("message").innerText = "ผิดแล้ว! ข้อที่ถูกคือ: " + questions[current].choices[correctIndex];
     }
     
     setTimeout(() => {
@@ -145,11 +185,11 @@
         showQuestion();
       } else {
         document.getElementById("game").classList.add("hidden");
-        document.getElementById("finalScoreDisplay").innerText = "คุณ " + playerName + " ได้ " + score + "/" + questions.length;
+        document.getElementById("finalScoreDisplay").innerText = "คุณ " + playerName + " ทำคะแนนได้ " + score + "/" + questions.length;
         document.getElementById("end").classList.remove("hidden");
         sendData();
       }
-    }, 1500);
+    }, 2000); // เพิ่มเวลาให้คนอ่านเฉลยหน่อยเป็น 2 วินาที
   }
 
   function sendData() {
