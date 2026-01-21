@@ -12,78 +12,150 @@
       font-family: 'Prompt', sans-serif; 
       background: linear-gradient(135deg, #e9f7ef 0%, #b2d8c1 100%); 
       color: #1e5c3a; 
-      overflow-x: hidden;
-      font-size: 16px; 
+      font-size: 16px;
     }
-
     .container { 
       min-height: 100vh; 
-      padding: 20px; 
       display: flex; 
       flex-direction: column; 
       justify-content: center; 
       align-items: center; 
       text-align: center;
-      position: relative; 
+      padding: 20px;
       box-sizing: border-box;
-      padding-bottom: 120px; 
     }
-
     .hidden { display: none !important; }
-
-    .title-emoji { font-size: 3rem; margin-bottom: 10px; }
-    .title-text { font-size: 1.6rem; line-height: 1.4; margin-bottom: 25px; font-weight: 700; }
-
     .btn { 
-      width: 100%; 
-      max-width: 320px; 
-      padding: 14px 20px; 
-      margin: 8px 0; 
-      border-radius: 50px; 
-      border: 2px solid transparent; 
-      background: #ffffff; 
-      cursor: pointer; 
-      font-family: 'Prompt', sans-serif; /* ฟอนต์เดียวกับคำถาม */
-      font-size: 1.1rem; 
-      font-weight: 600;
-      color: #2e7d32;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.08); 
-      transition: all 0.3s ease;
+      width: 100%; max-width: 320px; padding: 14px; margin: 8px 0; 
+      border-radius: 50px; border: none; background: #fff; 
+      font-family: 'Prompt', sans-serif; font-size: 1.1rem; font-weight: 600;
+      color: #2e7d32; box-shadow: 0 4px 10px rgba(0,0,0,0.1); cursor: pointer;
     }
-
-    .btn:hover:not(:disabled) { transform: translateY(-2px); background: #f1f8e9; }
     .btn.correct { background: #43a047 !important; color: #fff; }
     .btn.wrong { background: #e53935 !important; color: #fff; }
-    .btn:disabled { cursor: not-allowed; opacity: 0.8; }
-
     .question { 
-      font-size: 1.3rem; 
-      margin-bottom: 20px; 
-      background: rgba(255,255,255,0.5);
-      padding: 20px;
-      border-radius: 20px;
-      width: 100%;
-      max-width: 360px;
-      box-sizing: border-box;
-      font-weight: 600;
-      font-family: 'Prompt', sans-serif;
+      font-size: 1.3rem; font-weight: 600; margin-bottom: 20px; 
+      background: rgba(255,255,255,0.5); padding: 20px; border-radius: 20px; width: 100%; max-width: 360px;
     }
-
-    .message { margin-top: 15px; font-size: 1.1rem; font-weight: bold; min-height: 40px; }
-
-    .logo-footer { 
-      position: absolute;
-      bottom: 30px;
-      left: 50%;
-      transform: translateX(-50%);
-      max-width: 140px;
-      opacity: 1;
-    }
-
-    #finalScoreDisplay { font-size: 1.5rem; margin: 15px 0; font-weight: bold; }
+    .logo-footer { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); max-width: 140px; }
   </style>
 </head>
 <body>
 
 <div id="loading" class="container">
-  <div class="title-emoji
+  <p>⌛ กำลังเตรียมความพร้อมเพื่อโลกสีเขียว...</p>
+</div>
+
+<div id="start" class="container hidden">
+  <h1 style="font-size: 1.8rem;">สวัสดีคุณ <span id="display-name"></span></h1>
+  <p style="font-size: 1.2rem;">ขยะนี้ควรทิ้งถังไหน?</p>
+  <button class="btn" onclick="startGame()">เริ่มเล่น 🌍</button>
+</div>
+
+<div id="game" class="container hidden">
+  <div id="question" class="question"></div>
+  <div id="choices"></div>
+  <div id="message" style="margin-top:15px; font-weight:bold;"></div>
+</div>
+
+<div id="end" class="container hidden">
+  <h1 style="font-size: 2rem;">เก่งมาก!</h1>
+  <p id="finalScoreDisplay" style="font-size: 1.5rem; font-weight: bold;"></p>
+  <p>ทุกการแยกขยะ = 1 ครั้งที่ช่วยโลก 🌍💚</p>
+</div>
+
+<img class="logo-footer" src="https://www.advancebio11.com/wp-content/uploads/2025/07/New-Advance-BIO_s-logo-430x121_result.webp">
+
+<script>
+  const MY_LIFF_ID = "2008938028-gCqozVV5"; 
+  const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzeoyz1cTR4lW4NE-HkUYLia2J2Xw9TFfIUp7j-8tmEQTrKIjSP1P9FaFVXecuZr7Ux/exec"; 
+
+  const questions = [
+    { text: "🧴 ขวดน้ำพลาสติกควรทิ้งถังไหน?", choices: ["♻️ ถังรีไซเคิล", "🔵 ถังขยะทั่วไป", "🍃 ถังซัมจั๋ง"], answer: 0 },
+    { text: "🍡 ไม้เสียบลูกชิ้นทิ้งยังไง?", choices: ["🔵 เสียบคนข้างๆ", "🔴 เสียบหลังทะลุหัวใจ", "🟤 ทิ้งลงถังไม้เสียบ"], answer: 2 },
+    { text: "🥤 น้ำหมดน้ำแข็งไม่หมดทำยังไง?", choices: ["🚮 ทิ้งด้วยกันไปเลย", "🧊 แยกทิ้งน้ำแข็งและแก้ว", "🍃 กินแก้วลงไป"], answer: 1 },
+    { text: "🥕 ขยะเศษอาหารทิ้งยังไง?", choices: ["🟡 เทใส่ถ้วยเพื่อน", "🟤 เขวี้ยงลงพื้น", "🟢 ถังขยะเศษอาหาร"], answer: 2 }
+  ];
+
+  let playerName = "", score = 0, current = 0, userResponses = [];
+
+  // ฟังก์ชันเริ่มต้น LIFF
+  async function init() {
+    try {
+      await liff.init({ liffId: MY_LIFF_ID });
+      if (!liff.isLoggedIn()) {
+        liff.login();
+      } else {
+        const profile = await liff.getProfile();
+        playerName = profile.displayName;
+        document.getElementById("display-name").innerText = playerName;
+        
+        // ซ่อนหน้าโหลด และโชว์หน้าเริ่มเกม
+        document.getElementById("loading").classList.add("hidden");
+        document.getElementById("start").classList.remove("hidden");
+      }
+    } catch (err) {
+      alert("LIFF Error: " + err.message);
+    }
+  }
+
+  window.onload = init;
+
+  function startGame() {
+    document.getElementById("start").classList.add("hidden");
+    document.getElementById("game").classList.remove("hidden");
+    showQuestion();
+  }
+
+  function showQuestion() {
+    const q = questions[current];
+    document.getElementById("question").innerText = q.text;
+    const choicesDiv = document.getElementById("choices");
+    choicesDiv.innerHTML = "";
+    document.getElementById("message").innerText = "";
+
+    q.choices.forEach((choice, index) => {
+      const btn = document.createElement("button");
+      btn.className = "btn";
+      btn.innerText = choice;
+      btn.onclick = () => check(index, btn);
+      choicesDiv.appendChild(btn);
+    });
+  }
+
+  function check(index, btn) {
+    const buttons = document.querySelectorAll("#choices .btn");
+    buttons.forEach(b => b.disabled = true);
+
+    const isCorrect = (index === questions[current].answer);
+    userResponses.push(questions[current].choices[index]);
+
+    if (isCorrect) {
+      score++;
+      btn.classList.add("correct");
+      document.getElementById("message").innerText = "ถูกต้อง! 🌱";
+    } else {
+      btn.classList.add("wrong");
+      document.getElementById("message").innerText = "ผิดแล้วจ้า!";
+    }
+    
+    setTimeout(() => {
+      current++;
+      if (current < questions.length) {
+        showQuestion();
+      } else {
+        document.getElementById("game").classList.add("hidden");
+        document.getElementById("finalScoreDisplay").innerText = "คุณ " + playerName + " ได้ " + score + "/" + questions.length;
+        document.getElementById("end").classList.remove("hidden");
+        sendData();
+      }
+    }, 1500);
+  }
+
+  function sendData() {
+    const data = { name: playerName, totalScore: score, details: userResponses };
+    fetch(WEB_APP_URL, { method: "POST", mode: "no-cors", body: JSON.stringify(data) });
+  }
+</script>
+</body>
+</html>
