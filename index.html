@@ -3,22 +3,81 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>แยกขยะรักษ์โลก</title>
+  <title>แยกขยะรักษ์โลก - Advance BIO</title>
+  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;600;700&display=swap" rel="stylesheet">
   <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
   <style>
-    body { margin: 0; font-family: sans-serif; background: #e9f7ef; color: #1e5c3a; }
-    .container { min-height: 100vh; padding: 20px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; }
+    body { 
+      margin: 0; 
+      font-family: 'Prompt', sans-serif; 
+      background: linear-gradient(135deg, #e9f7ef 0%, #b2d8c1 100%); 
+      color: #1e5c3a; 
+      overflow-x: hidden;
+    }
+
+    .container { 
+      min-height: 100vh; 
+      padding: 20px; 
+      display: flex; 
+      flex-direction: column; 
+      justify-content: center; 
+      align-items: center; 
+      text-align: center;
+      position: relative; 
+      box-sizing: border-box;
+      padding-bottom: 120px; 
+    }
+
     .hidden { display: none !important; }
-    .title-emoji { font-size: 2.8rem; }
-    .title-text { font-size: 2.1rem; margin-bottom: 24px; }
-    .btn { width: 100%; max-width: 340px; padding: 14px; margin: 8px 0; border-radius: 14px; border: none; background: #ffffff; cursor: pointer; font-size: 1.2rem; box-shadow: 0 3px 6px rgba(0,0,0,0.1); transition: 0.3s; }
+
+    .title-emoji { font-size: 3.5rem; margin-bottom: 10px; }
+    .title-text { font-size: 1.8rem; line-height: 1.4; margin-bottom: 30px; font-weight: 700; }
+
+    .btn { 
+      width: 100%; 
+      max-width: 320px; 
+      padding: 16px 24px; 
+      margin: 10px 0; 
+      border-radius: 50px; 
+      border: 2px solid transparent; 
+      background: #ffffff; 
+      cursor: pointer; 
+      font-size: 1.1rem; 
+      font-weight: 600;
+      color: #2e7d32;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.08); 
+      transition: all 0.3s ease;
+    }
+
+    .btn:hover:not(:disabled) { transform: translateY(-3px); background: #f1f8e9; }
+    .btn.correct { background: #43a047 !important; color: #fff; }
+    .btn.wrong { background: #e53935 !important; color: #fff; }
     .btn:disabled { cursor: not-allowed; opacity: 0.8; }
-    .btn.correct { background: #4caf50 !important; color: #fff; }
-    .btn.wrong { background: #f44336 !important; color: #fff; }
-    .question { font-size: 1.5rem; margin-bottom: 20px; font-weight: bold; }
-    .message { margin-top: 16px; min-height: 32px; font-weight: bold; }
-    .logo { max-width: 160px; margin: 12px 0; }
-    #loading { font-size: 1.2rem; color: #1e5c3a; }
+
+    .question { 
+      font-size: 1.4rem; 
+      margin-bottom: 25px; 
+      background: rgba(255,255,255,0.5);
+      padding: 20px;
+      border-radius: 20px;
+      width: 100%;
+      max-width: 360px;
+      box-sizing: border-box;
+    }
+
+    .message { margin-top: 20px; font-weight: bold; min-height: 40px; }
+
+    .logo-footer { 
+      position: absolute;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      max-width: 160px; /* ปรับขนาดโลโก้ให้ชัดเจนขึ้น */
+      opacity: 1;
+    }
+
+    #finalScoreDisplay { font-size: 1.5rem; margin: 20px 0; font-weight: bold; }
+    .thank-you-msg { font-size: 1.2rem; margin-bottom: 20px; }
   </style>
 </head>
 <body>
@@ -26,29 +85,29 @@
 <div id="loading" class="container">
   <div class="title-emoji">⌛</div>
   <p>กำลังเตรียมความพร้อมเพื่อโลกสีเขียว...</p>
+  <img class="logo-footer" src="https://www.advancebio11.com/wp-content/uploads/2025/07/New-Advance-BIO_s-logo-430x121_result.webp" alt="Logo">
 </div>
 
 <div id="start" class="container hidden">
   <div class="title-emoji">🗑️♻️</div>
   <div class="title-text">สวัสดีคุณ <span id="display-name"></span><br>ขยะนี้ควรทิ้งถังไหน?</div>
   <button class="btn" onclick="startGame()">เริ่มเล่น 🌍</button>
+  <img class="logo-footer" src="https://www.advancebio11.com/wp-content/uploads/2025/07/New-Advance-BIO_s-logo-430x121_result.webp" alt="Logo">
 </div>
 
 <div id="game" class="container hidden">
   <div id="question" class="question"></div>
   <div id="choices"></div>
   <div id="message" class="message"></div>
+  <img class="logo-footer" src="https://www.advancebio11.com/wp-content/uploads/2025/07/New-Advance-BIO_s-logo-430x121_result.webp" alt="Logo">
 </div>
 
 <div id="end" class="container hidden">
-  <h1>🎉 เก่งมาก!</h1>
+  <div class="title-emoji">🥳</div>
+  <h1>เก่งมาก!</h1>
   <p id="finalScoreDisplay"></p>
-  <p>ทุกการแยกขยะ = 1 ครั้งที่ช่วยโลก 🌍💚</p>
-  <img class="logo" src="https://www.advancebio11.com/wp-content/uploads/2025/07/New-Advance-BIO_s-logo-430x121_result.webp" alt="Logo">
-  <br>
-  <a href="https://lin.ee/9I8XlM7" target="_blank">
-    <img style="max-width:200px;" src="https://drive.google.com/uc?export=view&id=1fBN0BzUOyKKCiJk06VacK2dsyrPx5sb7" alt="Add Line">
-  </a>
+  <p class="thank-you-msg">ทุกการแยกขยะ = 1 ครั้งที่ช่วยโลก 🌍💚</p>
+  <img class="logo-footer" src="https://www.advancebio11.com/wp-content/uploads/2025/07/New-Advance-BIO_s-logo-430x121_result.webp" alt="Logo">
 </div>
 
 <script>
@@ -110,7 +169,6 @@
   }
 
   function checkAnswer(index, btn) {
-    // ล็อคปุ่มไม่ให้กดซ้ำ
     const buttons = document.querySelectorAll("#choices .btn");
     buttons.forEach(b => b.disabled = true);
 
@@ -123,32 +181,4 @@
       document.getElementById("message").innerText = "ถูกต้อง! 🌱";
     } else {
       btn.classList.add("wrong");
-      document.getElementById("message").innerText = "ผิดแล้ว! ข้อที่ถูกคือ: " + questions[current].choices[questions[current].answer];
-    }
-    setTimeout(nextQuestion, 1500);
-  }
-
-  function nextQuestion() {
-    current++;
-    if (current < questions.length) {
-      showQuestion();
-    } else {
-      sendData();
-      document.getElementById("game").classList.add("hidden");
-      document.getElementById("finalScoreDisplay").innerText = "คุณ " + playerName + " ทำคะแนนได้ " + score + "/" + questions.length;
-      document.getElementById("end").classList.remove("hidden");
-    }
-  }
-
-  function sendData() {
-    const data = { name: playerName, totalScore: score, details: userResponses };
-    fetch(WEB_APP_URL, {
-      method: "POST",
-      mode: "no-cors",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data)
-    });
-  }
-</script>
-</body>
-</html>
+      document.getElementById("message").innerText = "ผิดแล้ว! ข้อที่ถูกคือ: " + questions[current].choices[questions[current].
