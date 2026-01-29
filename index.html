@@ -11,51 +11,76 @@
     * { font-family: 'Prompt', sans-serif !important; box-sizing: border-box; }
     body { margin: 0; background-color: var(--bg-light); color: var(--primary-green); height: 100vh; overflow: hidden; }
 
+    /* ปรับ Layout ให้สมดุลตามสเกล PDF */
     .container { 
       width: 100%; height: 100vh; display: flex; flex-direction: column; 
       align-items: center; justify-content: space-between; 
-      padding: 15px 25px; text-align: center;
+      padding: 40px 25px 30px 25px; /* ระยะห่างขอบจอ */
+      text-align: center;
     }
 
     .hidden { display: none !important; }
 
-    /* --- ส่วนจัดการรูปภาพ: เน้นสเกลจริงและความคมชัด --- */
-    img { 
-      max-width: 100%; 
-      height: auto !important; /* ปล่อยความสูงตามสัดส่วนจริง */
-      object-fit: contain; 
-      display: block; 
-      margin: 0 auto;
-      background: transparent !important;
-      image-rendering: -webkit-optimize-contrast; /* เพิ่มความคมชัด */
-    }
-
+    /* Logo บน (อิงสเกล 222px จากบน และกว้าง 432px ในจอใหญ่) */
     .main-logo { 
-      width: 130px; /* ขนาดที่ดูเหมาะสมกับ Logo แนวนอน */
-      margin-bottom: 5px;
+      width: 160px; /* ขนาดปรับลดเพื่อความสวยงามบนจอเล็กแต่คงสัดส่วนเดิม */
+      height: auto !important;
+      margin-top: 10px;
+      object-fit: contain;
+      image-rendering: -webkit-optimize-contrast;
     }
 
+    /* รูปการ์ตูนตรงกลางหน้าแรก */
     .center-img { 
-      width: 120px; 
-      margin: 10px 0; 
+      width: 150px; 
+      height: auto !important;
+      margin: 15px 0; 
     }
 
+    /* Footer Partner (อิงสเกล 421px และห่างขอบล่าง 116px) */
+    .footer { margin-bottom: 10px; }
     .partner-logos { 
-      width: 180px; /* ขนาด Footer ให้เห็นโลโก้พาร์ทเนอร์ชัดเจน */
-      margin-top: 5px;
+      width: 220px; 
+      height: auto !important;
+      image-rendering: -webkit-optimize-contrast;
     }
 
-    /* --- UI ส่วนอื่นๆ --- */
-    h1 { font-size: 1.6rem; font-weight: 700; margin: 10px 0; line-height: 1.2; }
-    .game-content { flex-grow: 1; display: flex; flex-direction: column; justify-content: flex-start; width: 100%; padding-top: 10px; }
-    .choices-stack { width: 100%; max-width: 320px; margin: 0 auto; }
-    .choice-btn { width: 100%; background: #ffffff; border: none; padding: 14px; margin: 8px 0; border-radius: 50px; font-size: 1.1rem; color: var(--primary-green); font-weight: 500; cursor: pointer; box-shadow: 0 3px 10px rgba(0,0,0,0.06); outline: none; }
-    .feedback-area { min-height: 100px; margin-top: 5px; visibility: hidden; }
+    /* ปุ่มเริ่มเกม (อิงสเกล 700px จาก PDF) */
+    .btn-start { 
+      background: var(--primary-green); 
+      color: #fff; 
+      border: none; 
+      width: 100%; 
+      max-width: 280px; /* เทียบเท่าสเกล 700px ในจอใหญ่ */
+      padding: 15px; 
+      border-radius: 50px; 
+      font-size: 1.3rem; 
+      font-weight: 600; 
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(6, 121, 87, 0.3);
+    }
+
+    /* ปุ่มเลือกตอบ (อิงสเกลความสูง 143px และห่าง 61px) */
+    .choice-btn { 
+      width: 100%; 
+      max-width: 320px; 
+      background: #ffffff; 
+      border: none; 
+      padding: 16px; 
+      margin: 10px 0; 
+      border-radius: 50px; 
+      font-size: 1.1rem; 
+      color: var(--primary-green); 
+      font-weight: 500; 
+      box-shadow: 0 3px 10px rgba(0,0,0,0.06);
+    }
+
+    h1 { font-size: 1.7rem; font-weight: 700; margin: 10px 0; line-height: 1.2; }
+    .game-content { flex-grow: 1; display: flex; flex-direction: column; justify-content: flex-start; width: 100%; padding-top: 20px; }
+    .feedback-area { min-height: 110px; margin-top: 10px; visibility: hidden; }
     .feedback-area.active { visibility: visible; }
-    .feedback-text { font-weight: 700; font-size: 1.3rem; }
-    .emoji-display { font-size: 3rem; margin-top: 5px; }
     .score-big { font-size: 5rem; font-weight: 700; line-height: 1; margin: 0; }
-    .btn-start { background: var(--primary-green); color: #fff; border: none; padding: 12px 60px; border-radius: 50px; font-size: 1.3rem; font-weight: 600; cursor: pointer; }
+
     #loading-page { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-light); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 99; }
   </style>
 </head>
@@ -63,7 +88,7 @@
 
 <div id="loading-page">
   <div style="font-size: 2rem;">⌛</div>
-  <p style="font-size: 1.2rem;">กำลังเตรียมความพร้อมเพื่อโลกสีเขียว...</p>
+  <p style="font-size: 1.2rem;">กำลังเตรียมความพร้อม...</p>
 </div>
 
 <div id="start-page" class="container hidden">
@@ -83,8 +108,8 @@
     <h1 id="question-text"></h1>
     <div id="choices-container" class="choices-stack"></div>
     <div id="feedback-area" class="feedback-area">
-      <div id="feedback-msg" class="feedback-text"></div>
-      <div id="feedback-emoji" class="emoji-display"></div>
+      <div id="feedback-msg" style="font-weight: 700; font-size: 1.3rem;"></div>
+      <div id="feedback-emoji" style="font-size: 3rem; margin-top: 5px;"></div>
     </div>
   </div>
   <div class="footer"><img src="https://i.postimg.cc/tJgTbpm4/2-th-ngth-kth.png" class="partner-logos"></div>
@@ -94,13 +119,14 @@
   <img src="https://i.postimg.cc/FHwJxdCD/1-Logo-yaek-KUlok.png" class="main-logo">
   <div>
     <p id="final-score" class="score-big">0/4</p>
-    <p id="result-user-name" style="font-weight: 600; font-size: 1.2rem;"></p>
+    <p id="result-user-name" style="font-weight: 600; font-size: 1.2rem; margin: 5px 0;"></p>
     <h1 id="result-title"></h1>
-    <p id="result-desc" style="font-weight: 600;"></p>
-    <div id="result-emoji" class="emoji-display"></div>
+    <p id="result-desc" style="font-weight: 600; color: #555;"></p>
+    <p style="font-size: 0.9rem; margin-top: 10px;">การแยกขยะวันนี้ คุณช่วยโลกได้เยอะเลยล่ะ!</p>
+    <div id="result-emoji" style="font-size: 3.5rem; margin-top: 10px;"></div>
   </div>
   <div class="footer">
-    <p style="font-weight: 700;">🍃 ขอบคุณที่ช่วยกัน 🌍</p>
+    <p style="font-weight: 700;">ขอบคุณที่ช่วยกัน 🌱 🌎</p>
     <img src="https://i.postimg.cc/tJgTbpm4/2-th-ngth-kth.png" class="partner-logos">
   </div>
 </div>
@@ -116,7 +142,13 @@
     { q: "ขยะเศษอาหาร<br>ทิ้งยังไงดี?", options: ["เทใส่ถ้วยเพื่อน", "เก็บไว้ดูต่างหน้า", "ทิ้งลงถังขยะเศษอาหาร"], answer: 2, cMsg: "สกิลแยกขยะ คือโฮ่ง!", wMsgs: ["เอ้า! ทำไมทำอย่างนั้น", "ผิด! ดูของแฟนเก่า ยังเศร้าไม่พอหรอ"], emojis: ["🙌", "🤔"] }
   ];
 
-  const results = { 0: { title: "เหลือจะเชื่อ!", desc: "สงสัยนอนน้อย รู้สึกอ่อมแทน", emoji: "😔" }, 1: { title: "ทวนความรู้สุด!", desc: "เกือบละ เกือบผิดหมดทุกข้อละ", emoji: "🙋‍♀️" }, 2: { title: "จะลำแบ้!", desc: "ผิดขนาดนี้ พี่ถังขยะร้องไห้แล้ว", emoji: "😔" }, 3: { title: "ใกล้ความจริง!", desc: "แยกไม่เนียน ไปเรียนมาใหม่", emoji: "😘" }, 4: { title: "ทำได้แล้ว!", desc: "เก่งขนาดนี้ พี่ซาเล้งมีหนาว", emoji: "😍" } };
+  const results = {
+    0: { title: "เหลือจะเชื่อ!", desc: "สงสัยนอนน้อย รู้สึกนอยแทน", emoji: "😔" },
+    1: { title: "เกือบละ!", desc: "ทวนความรู้หน่อยนะ เพื่อโลกเรา", emoji: "🙋‍♀️" },
+    2: { title: "สู้เขา!", desc: "อีกนิดเดียว จะแยกได้เป๊ะแล้ว", emoji: "😔" },
+    3: { title: "ใกล้ความจริง!", desc: "แยกเก่งแล้วนะเนี่ย!", emoji: "😘" },
+    4: { title: "ยอดเยี่ยม!", desc: "เก่งขนาดนี้ พี่ซาเล้งมีหนาว", emoji: "😍" }
+  };
 
   async function initLIFF() {
     try {
@@ -131,7 +163,11 @@
     document.getElementById('start-page').classList.remove('hidden');
   }
 
-  function startGame() { document.getElementById('start-page').classList.add('hidden'); document.getElementById('game-page').classList.remove('hidden'); showQuestion(); }
+  function startGame() { 
+    document.getElementById('start-page').classList.add('hidden'); 
+    document.getElementById('game-page').classList.remove('hidden'); 
+    showQuestion(); 
+  }
 
   function showQuestion() {
     const data = questions[currentStep];
@@ -171,7 +207,7 @@
     document.getElementById('result-page').classList.remove('hidden');
     const res = results[score];
     document.getElementById('final-score').innerText = score + "/4";
-    document.getElementById('result-user-name').innerText = playerName;
+    document.getElementById('result-user-name').innerText = "คุณ " + playerName;
     document.getElementById('result-title').innerText = res.title;
     document.getElementById('result-desc').innerText = res.desc;
     document.getElementById('result-emoji').innerText = res.emoji;
