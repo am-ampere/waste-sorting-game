@@ -20,7 +20,6 @@
     }
     .hidden { display: none !important; }
 
-    /* หน้าโหลดแบบมินิมอล */
     #loading-page {
       position: fixed; top: 0; left: 0; width: 100%; height: 100%;
       background: var(--bg-light); display: flex; flex-direction: column;
@@ -45,7 +44,7 @@
       width: 100%; background: #ffffff; border: none; padding: 14px; 
       margin: 8px 0; border-radius: 50px; font-size: 1.1rem; 
       color: var(--primary-green); font-weight: 500; cursor: pointer;
-      box-shadow: 0 3px 10px rgba(0,0,0,0.06);
+      box-shadow: 0 3px 10px rgba(0,0,0,0.06); outline: none;
     }
 
     .feedback-area { min-height: 120px; margin-top: 10px; visibility: hidden; }
@@ -104,8 +103,9 @@
 </div>
 
 <script>
-  // อัปเดต URL ใหม่เรียบร้อยครับ
-  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwgDfpS3UrM8gFpUMWBziHVnojI8jF96fzj0KlUd-q6wAwcZPq3nZVy5E3Mqc6ZZsL9/exec";
+  // ใช้ URL ล่าสุดที่คุณให้มา
+  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzFp9nTIsA_MoKzv5iWr6PQdS8zY08osLyOJG_X6VpLVI5V0H8OYTKwKdPpNvMyrJzF/exec";
+  
   let playerName = "ผู้เล่น";
   let currentStep = 0, score = 0, userAnswers = [];
 
@@ -222,6 +222,7 @@
   }
 
   function saveToSheet() {
+    // ชื่อ Key (เช่น Name, Score, Q1_Answer) ต้องตรงกับหัวตารางใน Google Sheets เป๊ะๆ
     const payload = {
       Name: playerName,
       Score: score,
@@ -243,5 +244,3 @@
 </script>
 </body>
 </html>
-
-
