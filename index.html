@@ -25,33 +25,22 @@
     }
     .hidden { display: none !important; }
 
-    /* ปรับขนาดรูปให้ Balance ตามตัวอย่าง */
+    /* UI Scales */
     .main-logo { width: 140px; height: auto; }
     .center-img { width: 110px; height: auto; margin: 15px 0; }
-    .partner-logos { width: 150px; height: auto; margin-top: 10px; }
+    .partner-logos { width: 150px; height: auto; }
 
     h1 { font-size: 1.8rem; font-weight: 700; margin: 5px 0; line-height: 1.2; }
-    p { font-size: 1.1rem; margin: 5px 0; }
-
     .btn-start { 
       background: var(--primary-green); color: #fff; border: none; 
       padding: 12px 60px; border-radius: 50px; font-size: 1.3rem; 
       font-weight: 600; cursor: pointer; margin-top: 20px;
-      box-shadow: 0 4px 15px rgba(6, 121, 87, 0.3);
     }
-
     .choice-btn { 
       width: 100%; max-width: 320px; background: #fff; border: 1.5px solid var(--primary-green); 
-      padding: 12px; margin: 8px 0; border-radius: 50px; font-size: 1.1rem; 
-      color: var(--primary-green); font-weight: 500; cursor: pointer;
+      padding: 12px; margin: 8px 0; border-radius: 50px; font-size: 1.1rem; color: var(--primary-green);
     }
-
-    .score-big { font-size: 5.5rem; font-weight: 700; color: var(--primary-green); margin: 0; line-height: 1; }
-    
-    .footer { width: 100%; display: flex; flex-direction: column; align-items: center; }
-    .footer-text { font-size: 0.75rem; color: var(--primary-green); margin-bottom: 5px; }
-
-    /* Loading */
+    .score-big { font-size: 5.5rem; font-weight: 700; color: var(--primary-green); line-height: 1; }
     .loader { border: 5px solid #f3f3f3; border-top: 5px solid var(--primary-green); border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin-bottom: 20px; }
     @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
   </style>
@@ -64,58 +53,51 @@
 </div>
 
 <div id="start-page" class="container hidden">
-  <img src="https://i.ibb.co/60m6Y20H/h1-J2dHjq.png" class="main-logo" alt="Main Logo">
-  <div style="width: 100%;">
-    <h1>สวัสดี<br><span id="user-name">...</span></h1>
+  <img src="https://i.ibb.co/60m6Y20H/h1-J2dHjq.png" class="main-logo">
+  <div>
+    <h1>สวัสดี<br><span id="user-name">คุณพี่</span></h1>
     <p>คุณแยกขยะเก่งแค่ไหน มาทดสอบกัน!</p>
     <button class="btn-start" onclick="startGame()">เริ่มเล่นเกม</button>
   </div>
-  <img src="https://i.ibb.co/RT9f6P59/z-Wfz6w-JJ.png" class="center-img" alt="Bin Logo">
-  <div class="footer">
-    <p class="footer-text">ทิ้งถูกที่ ลดถุงขยะย่อยสลายได้</p>
-    <img src="https://i.ibb.co/3ykXWjBy/Cs-QTb51-N.png" class="partner-logos" alt="Partners">
-  </div>
+  <img src="https://i.ibb.co/RT9f6P59/z-Wfz6w-JJ.png" class="center-img">
+  <div class="footer"><img src="https://i.ibb.co/3ykXWjBy/Cs-QTb51-N.png" class="partner-logos"></div>
 </div>
 
 <div id="game-page" class="container hidden">
   <img src="https://i.ibb.co/60m6Y20H/h1-J2dHjq.png" class="main-logo">
   <div style="width: 100%; flex-grow: 1; display: flex; flex-direction: column; justify-content: center;">
-    <h1 id="question-text" style="font-size: 1.6rem; margin-bottom: 20px;"></h1>
+    <h1 id="question-text"></h1>
     <div id="choices-container"></div>
     <div id="feedback" class="hidden" style="margin-top: 20px;">
-      <div id="feedback-msg" style="font-weight: 700; font-size: 1.2rem;"></div>
+      <div id="feedback-msg" style="font-weight: 700;"></div>
       <div id="feedback-emoji" style="font-size: 3rem;"></div>
     </div>
   </div>
-  <div class="footer">
-    <img src="https://i.ibb.co/3ykXWjBy/Cs-QTb51-N.png" class="partner-logos">
-  </div>
+  <img src="https://i.ibb.co/3ykXWjBy/Cs-QTb51-N.png" class="partner-logos">
 </div>
 
 <div id="result-page" class="container hidden">
   <img src="https://i.ibb.co/60m6Y20H/h1-J2dHjq.png" class="main-logo">
-  <div style="margin-top: -20px;">
+  <div>
     <p id="final-score" class="score-big">0/4</p>
-    <p id="result-user-name" style="font-weight: 600; margin: 5px 0;"></p>
+    <p id="result-user-name" style="font-weight: 600;"></p>
     <h1 id="result-title"></h1>
-    <p id="result-desc" style="font-weight: 600;"></p>
-    <div id="result-emoji" style="font-size: 4rem; margin-top: 10px;"></div>
+    <p id="result-desc"></p>
+    <div id="result-emoji" style="font-size: 4rem;"></div>
   </div>
-  <div style="width: 100%;">
-    <p style="font-size: 1rem; color: var(--primary-green); font-weight: 700; margin-bottom: 0;">🍃 ขอบคุณที่ช่วยกัน 🌍</p>
-    <p style="font-size: 0.8rem; margin-top: 5px; font-weight: 500;">การแยกขยะวันนี้ คุณพี่ช่วยโลกได้เยอะเลยล่ะ!</p>
-    <img src="https://i.ibb.co/3ykXWjBy/Cs-QTb51-N.png" class="partner-logos">
-  </div>
+  <img src="https://i.ibb.co/3ykXWjBy/Cs-QTb51-N.png" class="partner-logos">
 </div>
 
 <script>
   const LIFF_ID = "2008938028-gCqozVV5";
-  
+  // ** ใส่ URL ของ Google Apps Script Web App ของคุณที่นี่เพื่อเก็บ Log **
+  const SCRIPT_URL = "ใส่_URL_Script_ของคุณที่นี่"; 
+
   const questions = [
-    { q: "ขวดพลาสติก<br>ควรทิ้งถังไหน?", options: ["ถังขยะรีไซเคิล", "ถังขยะทั่วไป", "ถังซัมจั๋ง"], answer: 0, correctMsg: "อือหือ นี่มันมือปราบขยะ!", wrongMsgs: ["ผิด! แยกผิดชีวิตเปลี่ยน", "ผิด! ไปชมพูทวีปเลยไป๊"], emojis: ["🌱", "😈"] },
-    { q: "น้ำหมด น้ำแข็งเหลือ<br>ทิ้งยังไงดี?", options: ["ทิ้งด้วยกันไปเลย", "แยกน้ำ/น้ำแข็ง ทิ้งคนละถัง", "กินแก้วลงไป"], answer: 1, correctMsg: "แยกขยะโหด เหมือนโกรธโลกร้อน", wrongMsgs: ["ผิด! เทน้ำ/น้ำแข็งออกด้วย มันเปียกวุ้ย", "ผิด! ระวังแก้วติดคอ"], emojis: ["👍", "🤔"] },
-    { q: "ไม้เสียบลูกชิ้น<br>ทิ้งยังไงดี?", options: ["เสียบคนข้างๆ", "เสียบข้างหลัง ทะลุถึงหัวใจ", "ทิ้งลงถังไม้เสียบ"], answer: 2, correctMsg: "แยกเก่งจน ขยะขนลุก!", wrongMsgs: ["ผิด! ไม่ทำร้ายคนอื่นโน๊ะ", "ผิด! จุดอ่อนของช้านนน อยู่ตรงที่หัวใจขยับ"], emojis: ["🤩", "😢"] },
-    { q: "ขยะเศษอาหาร<br>ทิ้งยังไงดี?", options: ["เทใส่ถ้วยเพื่อน", "เก็บไว้ดูต่างหน้า", "ทิ้งลงถังขยะเศษอาหาร"], answer: 2, correctMsg: "สกิลแยกขยะ คือโฮ่ง!", wrongMsgs: ["เอ้า! ทำไมทำอย่างนั้น", "ผิด! ดูของแฟนเก่า ยังเศร้าไม่พอหรอ"], emojis: ["🙌", "😔"] }
+    { q: "ขวดพลาสติก<br>ควรทิ้งถังไหน?", options: ["ถังขยะรีไซเคิล", "ถังขยะทั่วไป", "ถังซัมจั๋ง"], answer: 0, correctMsg: "อือหือ นี่มันมือปราบขยะ!", wrongMsgs: ["ผิด! แยกผิดชีวิตเปลี่ยน", "ผิด! ไปชมพูทวีปเลยไป๊"] },
+    { q: "น้ำหมด น้ำแข็งเหลือ<br>ทิ้งยังไงดี?", options: ["ทิ้งด้วยกันไปเลย", "แยกน้ำ/น้ำแข็ง ทิ้งคนละถัง", "กินแก้วลงไป"], answer: 1, correctMsg: "แยกขยะโหด เหมือนโกรธโลกร้อน", wrongMsgs: ["ผิด! เทน้ำ/น้ำแข็งออกด้วย มันเปียกวุ้ย", "ผิด! ระวังแก้วติดคอ"] },
+    { q: "ไม้เสียบลูกชิ้น<br>ทิ้งยังไงดี?", options: ["เสียบคนข้างๆ", "เสียบข้างหลัง ทะลุถึงหัวใจ", "ทิ้งลงถังไม้เสียบ"], answer: 2, correctMsg: "แยกเก่งจน ขยะขนลุก!", wrongMsgs: ["ผิด! ไม่ทำร้ายคนอื่นโน๊ะ", "ผิด! จุดอ่อนของช้านนน อยู่ตรงที่หัวใจขยับ"] },
+    { q: "ขยะเศษอาหาร<br>ทิ้งยังไงดี?", options: ["เทใส่ถ้วยเพื่อน", "เก็บไว้ดูต่างหน้า", "ทิ้งลงถังขยะเศษอาหาร"], answer: 2, correctMsg: "สกิลแยกขยะ คือโฮ่ง!", wrongMsgs: ["เอ้า! ทำไมทำอย่างนั้น", "ผิด! ดูของแฟนเก่า ยังเศร้าไม่พอหรอ"] }
   ];
 
   const results = {
@@ -126,25 +108,34 @@
     4: { title: "ทำได้แล้ว!", desc: "เก่งขนาดนี้ พี่ซาเล้งมีหนาว", emoji: "😍" }
   };
 
-  let currentStep = 0, score = 0, playerName = "คุณพี่";
+  let currentStep = 0, score = 0, playerName = "คุณพี่", lineId = "unknown";
 
   async function initLIFF() {
+    // Force skip loading after 5 seconds
+    const forceSkip = setTimeout(() => {
+      showStartPage();
+      console.log("LIFF Timeout: Forced Skip");
+    }, 5000);
+
     try {
       await liff.init({ liffId: LIFF_ID });
       if (liff.isLoggedIn()) {
         const profile = await liff.getProfile();
         playerName = profile.displayName;
+        lineId = profile.userId;
       }
-    } catch (err) {
-      console.log("LIFF load failed");
-    } finally {
-      document.getElementById('user-name').innerText = playerName;
-      document.getElementById('result-user-name').innerText = `คุณ ${playerName}`;
-      document.getElementById('loading-page').classList.add('hidden');
-      document.getElementById('start-page').classList.remove('hidden');
+    } catch (err) { console.error("LIFF Init Error"); }
+    finally {
+      clearTimeout(forceSkip);
+      showStartPage();
     }
   }
-  window.onload = initLIFF;
+
+  function showStartPage() {
+    document.getElementById('user-name').innerText = playerName;
+    document.getElementById('loading-page').classList.add('hidden');
+    document.getElementById('start-page').classList.remove('hidden');
+  }
 
   function startGame() {
     document.getElementById('start-page').classList.add('hidden');
@@ -169,41 +160,48 @@
 
   function checkAnswer(idx) {
     const data = questions[currentStep];
-    const isCorrect = idx === data.answer;
-    const feedback = document.getElementById('feedback');
-    const msg = document.getElementById('feedback-msg');
-    const emo = document.getElementById('feedback-emoji');
-    
+    if(idx === data.answer) score++;
     document.querySelectorAll('.choice-btn').forEach(b => b.disabled = true);
-    
-    if(isCorrect) {
-      score++;
-      msg.innerText = data.correctMsg;
-      msg.style.color = "var(--accent-green)";
-      emo.innerText = data.emojis[0];
-    } else {
-      msg.innerText = (idx > data.answer) ? data.wrongMsgs[idx-1] : data.wrongMsgs[idx];
-      msg.style.color = "var(--error-red)";
-      emo.innerText = data.emojis[1];
-    }
-    feedback.classList.remove('hidden');
     
     setTimeout(() => {
       currentStep++;
       if(currentStep < questions.length) showQuestion();
-      else showResult();
-    }, 2000);
+      else finishGame();
+    }, 1200);
   }
 
-  function showResult() {
+  function finishGame() {
     document.getElementById('game-page').classList.add('hidden');
     document.getElementById('result-page').classList.remove('hidden');
+    
     const res = results[score];
     document.getElementById('final-score').innerText = `${score}/4`;
+    document.getElementById('result-user-name').innerText = `คุณ ${playerName}`;
     document.getElementById('result-title').innerText = res.title;
     document.getElementById('result-desc').innerText = res.desc;
     document.getElementById('result-emoji').innerText = res.emoji;
+
+    // ** ส่งข้อมูลเก็บ Log **
+    saveLog();
   }
+
+  function saveLog() {
+    if(!SCRIPT_URL || SCRIPT_URL.includes("ใส่_URL")) return;
+    fetch(SCRIPT_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      cache: 'no-cache',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        name: playerName,
+        lineId: lineId,
+        score: score,
+        timestamp: new Date().toLocaleString()
+      })
+    }).then(() => console.log("Log saved!")).catch(e => console.error("Log failed", e));
+  }
+
+  window.onload = initLIFF;
 </script>
 </body>
 </html>
