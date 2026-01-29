@@ -4,153 +4,102 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>ปฏิบัติการแยกกู้(KU)โลก</title>
-  
   <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600;700&display=swap" rel="stylesheet">
-  
   <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
   <style>
-    /* กำหนดตัวแปรและฟอนต์หลัก */
     :root { 
       --primary-green: #067957; 
-      --accent-green: #53b73b; 
-      --error-red: #b52424; 
       --bg-light: #ebf7ef; 
     }
-
-    * {
-      font-family: 'Prompt', sans-serif !important; /* บังคับใช้ Prompt ทุกจุด */
-      box-sizing: border-box;
-    }
-
+    * { font-family: 'Prompt', sans-serif !important; box-sizing: border-box; }
     body { 
-      margin: 0; 
-      background-color: var(--bg-light); 
-      color: var(--primary-green); 
-      height: 100vh; 
-      overflow: hidden; 
-      display: flex;
-      flex-direction: column;
+      margin: 0; background-color: var(--bg-light); 
+      color: var(--primary-green); height: 100vh; 
+      overflow: hidden; display: flex; flex-direction: column;
     }
-
     .container { 
-      width: 100%; 
-      height: 100vh; 
-      display: flex; 
-      flex-direction: column; 
-      align-items: center; 
-      justify-content: space-between; 
-      padding: 30px 25px; 
-      text-align: center;
+      width: 100%; height: 100vh; display: flex; flex-direction: column; 
+      align-items: center; justify-content: space-between; 
+      padding: 30px 25px; text-align: center;
     }
-
     .hidden { display: none !important; }
 
-    /* แก้ไขปัญหา Logo เหลี่ยม: ลบ Background/Border และบังคับ Ratio */
+    /* แก้ไข Logo ให้ไม่เหลี่ยม และไม่มีพื้นหลัง */
     img { 
-      max-width: 100%; 
-      height: auto !important; 
-      background: transparent !important; 
-      border: none !important;
-      box-shadow: none !important;
-      outline: none !important;
+      max-width: 100%; height: auto !important; 
+      background: transparent !important; border: none !important;
+      box-shadow: none !important; display: block; margin: 0 auto;
     }
-
-    .main-logo { width: 150px; }
-    .center-img { width: 120px; margin: 10px 0; }
+    .main-logo { width: 140px; }
+    .center-img { width: 120px; margin: 15px 0; }
     .partner-logos { width: 160px; }
 
-    h1 { 
-      font-size: 1.8rem; 
-      font-weight: 700; 
-      margin: 10px 0; 
-      line-height: 1.2; 
-      color: var(--primary-green);
-    }
-
-    p { font-size: 1.1rem; margin: 5px 0; font-weight: 500; }
-
-    /* ปุ่มเริ่มเกม */
+    h1 { font-size: 1.8rem; font-weight: 700; margin: 10px 0; line-height: 1.2; }
     .btn-start { 
-      background: var(--primary-green); 
-      color: #fff; 
-      border: none; 
-      padding: 12px 60px; 
-      border-radius: 50px; 
-      font-size: 1.3rem; 
-      font-weight: 600; 
-      cursor: pointer; 
-      margin-top: 15px;
+      background: var(--primary-green); color: #fff; border: none; 
+      padding: 12px 60px; border-radius: 50px; font-size: 1.3rem; 
+      font-weight: 600; cursor: pointer; margin-top: 15px;
     }
 
-    /* ปุ่มคำตอบ: ใช้ฟอนต์ Prompt และขนาดที่พอดี */
-    .choices-stack { 
-      width: 100%; 
-      max-width: 320px; 
-      margin: 10px auto; 
-    }
-
+    /* ปุ่มคำตอบ: สีขาวล้วน ไม่มีกรอบสีเขียว ตามตัวอย่าง */
+    .choices-stack { width: 100%; max-width: 320px; margin: 10px auto; }
     .choice-btn { 
-      width: 100%; 
-      background: #fff; 
-      border: 2px solid var(--primary-green); 
-      padding: 12px; 
-      margin: 8px 0; 
-      border-radius: 50px; 
-      font-size: 1.1rem; /* ขนาดฟอนต์คำตอบ */
-      color: var(--primary-green); 
-      font-weight: 600; 
-      cursor: pointer;
-      transition: 0.2s;
+      width: 100%; background: #ffffff; border: none; 
+      padding: 14px; margin: 8px 0; border-radius: 50px; 
+      font-size: 1.1rem; color: var(--primary-green); 
+      font-weight: 500; cursor: pointer;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.05); /* เงาบางๆ ให้ดูนูนเหมือนตัวอย่าง */
     }
 
-    .choice-btn:active { background: var(--bg-light); }
-
+    .feedback-text { font-weight: 700; font-size: 1.4rem; margin-top: 15px; }
     .score-big { font-size: 5.5rem; font-weight: 700; line-height: 1; margin: 0; }
-    .emoji-display { font-size: 3.5rem; margin: 5px 0; }
-    
-    .footer { width: 100%; }
-    .footer-text { font-size: 0.8rem; margin-bottom: 5px; font-weight: 500; }
-
+    .emoji-display { font-size: 3.5rem; margin: 10px 0; }
   </style>
 </head>
 <body>
 
 <div id="start-page" class="container">
-  <img src="https://i.ibb.co/h1J2dHjq/image.png" class="main-logo" alt="Logo">
+  <img src="https://i.ibb.co/h1J2dHjq/image.png" class="main-logo">
   <div>
     <h1>สวัสดี<br><span id="user-name">คุณพี่</span></h1>
     <p>คุณแยกขยะเก่งแค่ไหน มาทดสอบกัน!</p>
     <button class="btn-start" onclick="startGame()">เริ่มเล่นเกม</button>
   </div>
-  <img src="https://i.ibb.co/zWfz6wJJ/image.png" class="center-img" alt="Illustration">
+  <img src="https://i.ibb.co/zWfz6wJJ/image.png" class="center-img">
   <div class="footer">
-    <p class="footer-text">ทิ้งถูกที่ ลดถุงขยะย่อยสลายได้</p>
-    <img src="https://i.ibb.co/CsQTb51N/image.png" class="partner-logos" alt="Partners">
+    <p style="font-size: 0.8rem; margin-bottom: 5px;">ทิ้งถูกที่ ลดถุงขยะย่อยสลายได้</p>
+    <img src="https://i.ibb.co/CsQTb51N/image.png" class="partner-logos">
   </div>
 </div>
 
 <div id="game-page" class="container hidden">
   <img src="https://i.ibb.co/h1J2dHjq/image.png" class="main-logo">
   <div style="flex-grow: 1; display: flex; flex-direction: column; justify-content: center; width: 100%;">
-    <h1 id="question-text"></h1> <div id="choices-container" class="choices-stack"></div> <div id="feedback" class="hidden">
-      <div id="feedback-msg" style="font-weight: 700; font-size: 1.2rem;"></div>
+    <h1 id="question-text"></h1>
+    <div id="choices-container" class="choices-stack"></div>
+    <div id="feedback" class="hidden">
+      <div id="feedback-msg" class="feedback-text"></div>
       <div id="feedback-emoji" class="emoji-display"></div>
     </div>
   </div>
-  <img src="https://i.ibb.co/CsQTb51N/image.png" class="partner-logos">
+  <div class="footer">
+    <p style="font-size: 0.7rem;">ทิ้งถูกที่ ลดถุงขยะย่อยสลายได้</p>
+    <img src="https://i.ibb.co/CsQTb51N/image.png" class="partner-logos">
+  </div>
 </div>
 
 <div id="result-page" class="container hidden">
   <img src="https://i.ibb.co/h1J2dHjq/image.png" class="main-logo">
-  <div style="margin-top: -10px;">
+  <div>
     <p id="final-score" class="score-big">0/4</p>
-    <p id="result-user-name" style="font-weight: 600; font-size: 1.2rem;"></p>
+    <p id="result-user-name" style="font-weight: 600;"></p>
     <h1 id="result-title"></h1>
     <p id="result-desc" style="font-weight: 600;"></p>
     <div id="result-emoji" class="emoji-display"></div>
   </div>
   <div class="footer">
     <p style="font-weight: 700;">🍃 ขอบคุณที่ช่วยกัน 🌍</p>
+    <p style="font-size: 0.8rem;">การแยกขยะวันนี้ คุณพี่ช่วยโลกได้เยอะเลยล่ะ!</p>
     <img src="https://i.ibb.co/CsQTb51N/image.png" class="partner-logos">
   </div>
 </div>
@@ -160,16 +109,36 @@
   const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzjA_-iFEqrdTJzHlngMAIg1HQ7b0Bhot8eOHvRvShzmxHgCgGkngfD7CQOmSr50viz/exec";
 
   const questions = [
-    { q: "ขวดพลาสติก<br>ควรทิ้งถังไหน?", options: ["ถังขยะรีไซเคิล", "ถังขยะทั่วไป", "ถังซัมจั๋ง"], answer: 0, cMsg: "อือหือ นี่มันมือปราบขยะ!", wMsg: "ผิด! แยกผิดชีวิตเปลี่ยน", emojis: ["🌱", "😈"] },
-    { q: "น้ำหมด น้ำแข็งเหลือ<br>ทิ้งยังไงดี?", options: ["ทิ้งด้วยกันไปเลย", "แยกน้ำ/น้ำแข็ง ทิ้งคนละถัง", "กินแก้วลงไป"], answer: 1, cMsg: "แยกขยะโหด เหมือนโกรธโลกร้อน", wMsg: "ผิด! เทน้ำออกด้วย มันเปียกวุ้ย", emojis: ["👍", "🤔"] },
-    { q: "ไม้เสียบลูกชิ้น<br>ทิ้งยังไงดี?", options: ["เสียบคนข้างๆ", "เสียบข้างหลัง", "ทิ้งลงถังไม้เสียบ"], answer: 2, cMsg: "แยกเก่งจน ขยะขนลุก!", wMsg: "ผิด! ไม่ทำร้ายคนอื่นนะจ๊ะ", emojis: ["🤩", "😢"] },
-    { q: "ขยะเศษอาหาร<br>ทิ้งยังไงดี?", options: ["เทใส่ถ้วยเพื่อน", "เก็บไว้ดูต่างหน้า", "ทิ้งลงถังเศษอาหาร"], answer: 2, cMsg: "สกิลแยกขยะ คือโฮ่ง!", wMsg: "ผิด! ดูของแฟนเก่า ยังเศร้าไม่พอหรอ", emojis: ["🙌", "😔"] }
+    { 
+      q: "ขวดพลาสติก<br>ควรทิ้งถังไหน?", 
+      options: ["ถังขยะรีไซเคิล", "ถังขยะทั่วไป", "ถังซัมจั๋ง"], 
+      answer: 0, 
+      cMsg: "อื้อหือ นี่มันมือปราบขยะ!", wMsg: "ผิด! แยกผิดชีวิตเปลี่ยน", emojis: ["🌱", "😈"] 
+    },
+    { 
+      q: "น้ำหมด น้ำแข็งเหลือ<br>ทิ้งยังไงดี?", 
+      options: ["ทิ้งด้วยกันไปเลย", "แยกน้ำ/น้ำแข็ง ทิ้งคนละถัง", "กินแก้วลงไป"], 
+      answer: 1, 
+      cMsg: "แยกขยะโหด เหมือนโกรธโลกร้อน", wMsg: "ผิด! เทน้ำออกด้วย มันเปียกวุ้ย", emojis: ["👍", "😈"] 
+    },
+    { 
+      q: "ไม้เสียบลูกชิ้น<br>ทิ้งยังไงดี?", 
+      options: ["เสียบคนข้างๆ", "เสียบข้างหลัง ทะลุถึงหัวใจ", "ทิ้งลงถังไม้เสียบ"], 
+      answer: 2, 
+      cMsg: "แยกเก่งจน ขยะขนลุก!", wMsg: "ผิด! ไม่ทำร้ายคนอื่นโน๊ะ", emojis: ["😍", "😈"] 
+    },
+    { 
+      q: "ขยะเศษอาหาร<br>ทิ้งยังไงดี?", 
+      options: ["เทใส่ถ้วยเพื่อน", "เก็บไว้ดูต่างหน้า", "ทิ้งลงถังขยะเศษอาหาร"], 
+      answer: 2, 
+      cMsg: "สกิลแยกขยะ คือโฮ่ง!", wMsg: "ผิด! ดูของแฟนเก่า ยังเศร้าไม่พอหรอ", emojis: ["🙌", "🤔"] 
+    }
   ];
 
   const results = {
     0: { title: "เหลือจะเชื่อ!", desc: "สงสัยนอนน้อย รู้สึกอ่อมแทน", emoji: "😔" },
-    1: { title: "เกือบไปแล้ว!", desc: "เกือบผิดหมดทุกข้อละนะ", emoji: "🙋‍♀️" },
-    2: { title: "จะลำแบ้!", desc: "ผิดขนาดนี้ พี่ถังขยะร้องไห้แล้ว", emoji: "😢" },
+    1: { title: "คุณพี่ทวนความรู้สุด!", desc: "เกือบละ เกือบผิดหมดทุกข้อละ", emoji: "🙋‍♀️" },
+    2: { title: "จะลำแบ้!", desc: "ผิดขนาดนี้ พี่ถังขยะร้องไห้แล้ว", emoji: "😔" },
     3: { title: "ใกล้ความจริง!", desc: "แยกไม่เนียน ไปเรียนมาใหม่", emoji: "😘" },
     4: { title: "ทำได้แล้ว!", desc: "เก่งขนาดนี้ พี่ซาเล้งมีหนาว", emoji: "😍" }
   };
@@ -184,7 +153,7 @@
         playerName = profile.displayName;
         document.getElementById('user-name').innerText = playerName;
       }
-    } catch(e) { console.log("LIFF Init Error"); }
+    } catch(e) {}
   }
 
   function startGame() {
@@ -216,7 +185,7 @@
     if(isCorrect) score++;
 
     document.getElementById('feedback-msg').innerText = isCorrect ? data.cMsg : data.wMsg;
-    document.getElementById('feedback-msg').style.color = isCorrect ? "var(--accent-green)" : "var(--error-red)";
+    document.getElementById('feedback-msg').style.color = isCorrect ? "var(--primary-green)" : "#b52424";
     document.getElementById('feedback-emoji').innerText = isCorrect ? data.emojis[0] : data.emojis[1];
     document.getElementById('feedback').classList.remove('hidden');
     
@@ -247,7 +216,7 @@
       method: 'POST',
       mode: 'no-cors',
       body: JSON.stringify({ name: playerName, score: score, answers: userAnswers })
-    }).catch(e => console.log("Save error"));
+    }).catch(e => {});
   }
 
   window.onload = initLIFF;
