@@ -11,7 +11,7 @@
     * { font-family: 'Prompt', sans-serif !important; box-sizing: border-box; }
     body { 
       margin: 0; background-color: var(--bg-light); color: var(--primary-green); 
-      height: 100vh; overflow: hidden; display: flex; flex-direction: column;
+      height: 100vh; overflow: hidden;
     }
     .container { 
       width: 100%; height: 100vh; display: flex; flex-direction: column; 
@@ -19,6 +19,14 @@
       padding: 30px 25px; text-align: center;
     }
     .hidden { display: none !important; }
+
+    /* ส่วนหน้าโหลดที่เตรียมไว้ */
+    #loading-page {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: var(--bg-light); display: flex; flex-direction: column;
+      justify-content: center; align-items: center; z-index: 99;
+    }
+    .title-emoji { font-size: 3rem; margin-bottom: 10px; }
 
     img { max-width: 100%; height: auto !important; background: transparent !important; display: block; margin: 0 auto; }
     .main-logo { width: 140px; }
@@ -51,10 +59,15 @@
 </head>
 <body>
 
-<div id="start-page" class="container">
+<div id="loading-page">
+  <div class="title-emoji">⌛</div>
+  <p style="font-size: 1.3rem;">กำลังเตรียมความพร้อมเพื่อโลกสีเขียว...</p>
+</div>
+
+<div id="start-page" class="container hidden">
   <img src="https://i.ibb.co/h1J2dHjq/image.png" class="main-logo">
   <div>
-    <h1 id="user-display">กำลังเตรียมความพร้อมเพื่อโลกสีเขียว</h1>
+    <h1 id="user-display">สวัสดี คุณผู้เล่น</h1>
     <p>คุณแยกขยะเก่งแค่ไหน มาทดสอบกัน!</p>
     <button class="btn-start" onclick="startGame()">เริ่มเล่นเกม</button>
   </div>
@@ -92,6 +105,7 @@
 
 <script>
   const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzjA_-iFEqrdTJzHlngMAIg1HQ7b0Bhot8eOHvRvShzmxHgCgGkngfD7CQOmSr50viz/exec";
+  let playerName = "ผู้เล่น";
 
   const questions = [
     { q: "ขวดพลาสติก<br>ควรทิ้งถังไหน?", options: ["ถังขยะรีไซเคิล", "ถังขยะทั่วไป", "ถังซัมจั๋ง"], answer: 0, cMsg: "อื้อหือ นี่มันมือปราบขยะ!", wMsg: "ผิด! แยกผิดชีวิตเปลี่ยน", emojis: ["🌱", "😈"] },
@@ -108,22 +122,18 @@
     4: { title: "ทำได้แล้ว!", desc: "เก่งขนาดนี้ พี่ซาเล้งมีหนาว", emoji: "😍" }
   };
 
-  let currentStep = 0, score = 0, playerName = "ผู้เล่น", userAnswers = [];
-
   async function initLIFF() {
     try {
       await liff.init({ liffId: "2008938028-gCqozVV5" });
       if (liff.isLoggedIn()) {
         const profile = await liff.getProfile();
         playerName = profile.displayName;
-        // เปลี่ยนเป็น "สวัสดี [ชื่อ LINE]"
         document.getElementById('user-display').innerHTML = "สวัสดี " + playerName;
-      } else {
-        document.getElementById('user-display').innerHTML = "สวัสดี คุณผู้เล่น";
       }
-    } catch(e) {
-      document.getElementById('user-display').innerHTML = "สวัสดี คุณผู้เล่น";
-    }
+    } catch(e) {}
+    // ปิดหน้าโหลด แล้วโชว์หน้าแรก
+    document.getElementById('loading-page').classList.add('hidden');
+    document.getElementById('start-page').classList.remove('hidden');
   }
 
   function startGame() {
@@ -138,7 +148,6 @@
     const container = document.getElementById('choices-container');
     container.innerHTML = "";
     document.getElementById('feedback-area').classList.remove('active');
-
     data.options.forEach((opt, i) => {
       const btn = document.createElement('button');
       btn.className = 'choice-btn';
@@ -151,16 +160,12 @@
   function checkAnswer(idx) {
     const data = questions[currentStep];
     const isCorrect = (idx === data.answer);
-    userAnswers.push(data.options[idx]);
     if(isCorrect) score++;
-
     document.getElementById('feedback-msg').innerText = isCorrect ? data.cMsg : data.wMsg;
     document.getElementById('feedback-msg').style.color = isCorrect ? "var(--primary-green)" : "#b52424";
     document.getElementById('feedback-emoji').innerText = isCorrect ? data.emojis[0] : data.emojis[1];
     document.getElementById('feedback-area').classList.add('active');
-    
     document.querySelectorAll('.choice-btn').forEach(b => b.disabled = true);
-    
     setTimeout(() => {
       currentStep++;
       if(currentStep < questions.length) showQuestion();
@@ -173,7 +178,6 @@
     document.getElementById('result-page').classList.remove('hidden');
     const res = results[score];
     document.getElementById('final-score').innerText = score + "/4";
-    // หน้าสรุปใช้แค่ชื่อ Line ตามต้นฉบับ
     document.getElementById('result-user-name').innerText = playerName;
     document.getElementById('result-title').innerText = res.title;
     document.getElementById('result-desc').innerText = res.desc;
@@ -182,11 +186,7 @@
   }
 
   function saveToSheet() {
-    fetch(SCRIPT_URL, {
-      method: 'POST',
-      mode: 'no-cors',
-      body: JSON.stringify({ name: playerName, score: score, answers: userAnswers })
-    }).catch(e => {});
+    fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ name: playerName, score: score }) }).catch(e => {});
   }
 
   window.onload = initLIFF;
