@@ -14,12 +14,12 @@
     .container { 
       width: 100%; height: 100vh; display: flex; flex-direction: column; 
       align-items: center; justify-content: space-between; 
-      padding: 15px 25px; text-align: center;
+      padding: 10px 25px; text-align: center;
     }
 
     .hidden { display: none !important; }
 
-    /* --- ปรับขนาด Logo ใหม่ตามที่ต้องการ --- */
+    /* --- ปรับขนาด Logo ใหม่: เล็กและเน้นความคมชัด --- */
     img { 
       max-width: 100%; 
       height: auto !important; 
@@ -27,41 +27,43 @@
       display: block; 
       margin: 0 auto; 
       background-color: transparent !important;
+      /* รักษาความคมชัดของขอบรูป */
+      image-rendering: -webkit-optimize-contrast;
     }
 
     .main-logo { 
-      width: 120px;       /* ขนาดที่เล็กลง ดูสะอาดตาขึ้น */
-      max-height: 70px; 
+      width: 100px;   /* ขนาดเล็กจิ๋วตามต้องการ */
+      max-height: 60px; 
       margin-bottom: 5px;
     }
 
     .center-img { 
-      width: 110px; 
+      width: 90px; 
       margin: 5px 0; 
     }
 
     .partner-logos { 
-      width: 160px; 
+      width: 140px; 
       margin-top: 5px;
     }
 
-    h1 { font-size: 1.6rem; font-weight: 700; margin: 8px 0; line-height: 1.2; }
-    .game-content { flex-grow: 1; display: flex; flex-direction: column; justify-content: flex-start; width: 100%; padding-top: 10px; }
-    .choices-stack { width: 100%; max-width: 320px; margin: 0 auto; }
-    .choice-btn { width: 100%; background: #ffffff; border: none; padding: 13px; margin: 6px 0; border-radius: 50px; font-size: 1.05rem; color: var(--primary-green); font-weight: 500; cursor: pointer; box-shadow: 0 3px 10px rgba(0,0,0,0.06); outline: none; }
-    .feedback-area { min-height: 90px; margin-top: 5px; visibility: hidden; }
+    h1 { font-size: 1.5rem; font-weight: 700; margin: 5px 0; line-height: 1.2; }
+    .game-content { flex-grow: 1; display: flex; flex-direction: column; justify-content: flex-start; width: 100%; padding-top: 5px; }
+    .choices-stack { width: 100%; max-width: 300px; margin: 0 auto; }
+    .choice-btn { width: 100%; background: #ffffff; border: none; padding: 12px; margin: 6px 0; border-radius: 50px; font-size: 1rem; color: var(--primary-green); font-weight: 500; cursor: pointer; box-shadow: 0 3px 10px rgba(0,0,0,0.06); outline: none; }
+    .feedback-area { min-height: 80px; margin-top: 5px; visibility: hidden; }
     .feedback-area.active { visibility: visible; }
-    .feedback-text { font-weight: 700; font-size: 1.2rem; }
-    .emoji-display { font-size: 2.5rem; margin-top: 5px; }
-    .score-big { font-size: 4.5rem; font-weight: 700; line-height: 1; margin: 0; }
-    .btn-start { background: var(--primary-green); color: #fff; border: none; padding: 12px 50px; border-radius: 50px; font-size: 1.2rem; font-weight: 600; cursor: pointer; }
+    .feedback-text { font-weight: 700; font-size: 1.1rem; }
+    .emoji-display { font-size: 2.2rem; margin-top: 5px; }
+    .score-big { font-size: 4rem; font-weight: 700; line-height: 1; margin: 0; }
+    .btn-start { background: var(--primary-green); color: #fff; border: none; padding: 10px 40px; border-radius: 50px; font-size: 1.1rem; font-weight: 600; cursor: pointer; }
     #loading-page { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-light); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 99; }
   </style>
 </head>
 <body>
 
 <div id="loading-page">
-  <div style="font-size: 2rem;">⌛</div>
+  <div style="font-size: 1.8rem;">⌛</div>
   <p style="font-size: 1.2rem;">กำลังเตรียมความพร้อม...</p>
 </div>
 
@@ -69,8 +71,8 @@
   <img src="https://i.ibb.co/h1J2dHjq/image.png" class="main-logo">
   <div>
     <h1 id="user-display">สวัสดี คุณผู้เล่น</h1>
-    <p style="margin-top: 0;">คุณแยกขยะเก่งแค่ไหน มาทดสอบกัน!</p>
-    <button class="btn-start" onclick="startGame()">เริ่มเล่นเกม</button>
+    <p style="margin: 0; font-size: 0.95rem;">คุณแยกขยะเก่งแค่ไหน มาทดสอบกัน!</p>
+    <button class="btn-start" style="margin-top: 15px;" onclick="startGame()">เริ่มเล่นเกม</button>
   </div>
   <img src="https://i.ibb.co/zWfz6wJJ/image.png" class="center-img">
   <div class="footer"><img src="https://i.ibb.co/CsQTb51N/image.png" class="partner-logos"></div>
@@ -93,13 +95,13 @@
   <img src="https://i.ibb.co/h1J2dHjq/image.png" class="main-logo">
   <div>
     <p id="final-score" class="score-big">0/4</p>
-    <p id="result-user-name" style="font-weight: 600; font-size: 1.1rem; margin-bottom: 5px;"></p>
+    <p id="result-user-name" style="font-weight: 600; font-size: 1rem; margin-bottom: 2px;"></p>
     <h1 id="result-title"></h1>
-    <p id="result-desc" style="font-weight: 600;"></p>
+    <p id="result-desc" style="font-weight: 600; font-size: 0.9rem;"></p>
     <div id="result-emoji" class="emoji-display"></div>
   </div>
   <div class="footer">
-    <p style="font-weight: 700; margin-bottom: 5px;">🍃 ขอบคุณที่ช่วยกัน 🌍</p>
+    <p style="font-weight: 700; font-size: 0.9rem; margin-bottom: 2px;">🍃 ขอบคุณที่ช่วยกัน 🌍</p>
     <img src="https://i.ibb.co/CsQTb51N/image.png" class="partner-logos">
   </div>
 </div>
