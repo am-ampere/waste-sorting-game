@@ -20,13 +20,13 @@
     }
     .hidden { display: none !important; }
 
-    /* หน้าโหลดแบบตัวจิ๋วตามสั่ง */
+    /* หน้าโหลดแบบมินิมอล */
     #loading-page {
       position: fixed; top: 0; left: 0; width: 100%; height: 100%;
       background: var(--bg-light); display: flex; flex-direction: column;
       justify-content: center; align-items: center; z-index: 99;
     }
-    .loading-emoji { font-size: 2rem; margin-bottom: 5px; } /* ปรับขนาด emoji ⌛ */
+    .loading-emoji { font-size: 2rem; margin-bottom: 5px; }
 
     img { max-width: 100%; height: auto !important; background: transparent !important; display: block; margin: 0 auto; }
     .main-logo { width: 140px; }
@@ -45,11 +45,8 @@
       width: 100%; background: #ffffff; border: none; padding: 14px; 
       margin: 8px 0; border-radius: 50px; font-size: 1.1rem; 
       color: var(--primary-green); font-weight: 500; cursor: pointer;
-      box-shadow: 0 3px 10px rgba(0,0,0,0.06); position: relative;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.06);
     }
-    
-    /* สัญลักษณ์ถูก/ผิด บนปุ่ม */
-    .icon-status { position: absolute; right: 20px; top: 50%; transform: translateY(-50%); font-size: 1.5rem; }
 
     .feedback-area { min-height: 120px; margin-top: 10px; visibility: hidden; }
     .feedback-area.active { visibility: visible; }
@@ -117,7 +114,6 @@
       options: ["ถังขยะรีไซเคิล", "ถังขยะทั่วไป", "ถังซัมจั๋ง"], 
       answer: 0,
       cMsg: "อื้อหือ นี่มันมือปราบขยะ!", 
-      // แก้ไขคำตอบตามรูปภาพที่ส่งมา
       wMsgs: ["ผิด! แยกผิดชีวิตเปลี่ยน", "ผิด! ไปชมพูทวีปเลยไป๊"], 
       emojis: ["🌱", "😈"] 
     },
@@ -184,7 +180,7 @@
     data.options.forEach((opt, i) => {
       const btn = document.createElement('button');
       btn.className = 'choice-btn';
-      btn.innerHTML = `${opt} <span class="icon-status" id="icon-${i}"></span>`;
+      btn.innerText = opt;
       btn.onclick = () => checkAnswer(i);
       container.appendChild(btn);
     });
@@ -193,20 +189,12 @@
   function checkAnswer(idx) {
     const data = questions[currentStep];
     const isCorrect = (idx === data.answer);
+    
+    // บันทึกคำตอบที่เลือกลง Log
+    userAnswers.push(data.options[idx]);
     if(isCorrect) score++;
 
-    // แสดงสัญลักษณ์ถูก/ผิด
-    document.getElementById(`icon-${idx}`).innerHTML = isCorrect ? "✔️" : "❌";
-    
-    // เลือกข้อความผิดตามตัวเลือกที่กด
-    let msg = "";
-    if(isCorrect) {
-      msg = data.cMsg;
-    } else {
-      // ถ้าเลือกตัวเลือกแรกที่ผิด (idx 0 หรือ 1 ตามตำแหน่ง) ให้ดึง wMsgs ตามลำดับ
-      const wrongIdx = data.options.filter((_, index) => index !== data.answer).indexOf(data.options[idx]);
-      msg = data.wMsgs[wrongIdx] || data.wMsgs[0];
-    }
+    let msg = isCorrect ? data.cMsg : (data.wMsgs[data.options.filter((_, index) => index !== data.answer).indexOf(data.options[idx])] || data.wMsgs[0]);
 
     document.getElementById('feedback-msg').innerText = msg;
     document.getElementById('feedback-msg').style.color = isCorrect ? "var(--primary-green)" : "#b52424";
@@ -231,11 +219,21 @@
     document.getElementById('result-title').innerText = res.title;
     document.getElementById('result-desc').innerText = res.desc;
     document.getElementById('result-emoji').innerText = res.emoji;
+    
+    // ส่งข้อมูลไปเก็บใน Google Sheets (มีชื่อ, คะแนน, และคำตอบทั้งหมด)
     saveToSheet();
   }
 
   function saveToSheet() {
-    fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ name: playerName, score: score }) }).catch(e => {});
+    fetch(SCRIPT_URL, { 
+      method: 'POST', 
+      mode: 'no-cors', 
+      body: JSON.stringify({ 
+        name: playerName, 
+        score: score,
+        answers: userAnswers.join(', ') // รวมคำตอบทุข้อส่งไปเป็นข้อความเดียว
+      }) 
+    }).catch(e => {});
   }
 
   window.onload = initLIFF;
