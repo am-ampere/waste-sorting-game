@@ -7,15 +7,11 @@
   <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600;700&display=swap" rel="stylesheet">
   <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
   <style>
-    :root { 
-      --primary-green: #067957; 
-      --bg-light: #ebf7ef; 
-    }
+    :root { --primary-green: #067957; --bg-light: #ebf7ef; }
     * { font-family: 'Prompt', sans-serif !important; box-sizing: border-box; }
     body { 
-      margin: 0; background-color: var(--bg-light); 
-      color: var(--primary-green); height: 100vh; 
-      overflow: hidden; display: flex; flex-direction: column;
+      margin: 0; background-color: var(--bg-light); color: var(--primary-green); 
+      height: 100vh; overflow: hidden; display: flex; flex-direction: column;
     }
     .container { 
       width: 100%; height: 100vh; display: flex; flex-direction: column; 
@@ -24,36 +20,37 @@
     }
     .hidden { display: none !important; }
 
-    /* แก้ไข Logo ให้ไม่เหลี่ยม และไม่มีพื้นหลัง */
-    img { 
-      max-width: 100%; height: auto !important; 
-      background: transparent !important; border: none !important;
-      box-shadow: none !important; display: block; margin: 0 auto;
-    }
+    /* แก้ไข Logo */
+    img { max-width: 100%; height: auto !important; background: transparent !important; display: block; margin: 0 auto; }
     .main-logo { width: 140px; }
     .center-img { width: 120px; margin: 15px 0; }
     .partner-logos { width: 160px; }
 
     h1 { font-size: 1.8rem; font-weight: 700; margin: 10px 0; line-height: 1.2; }
-    .btn-start { 
-      background: var(--primary-green); color: #fff; border: none; 
-      padding: 12px 60px; border-radius: 50px; font-size: 1.3rem; 
-      font-weight: 600; cursor: pointer; margin-top: 15px;
+    
+    /* แก้ไขตำแหน่งให้นิ่ง: จองพื้นที่ส่วนกลาง */
+    .game-content { 
+      flex-grow: 1; display: flex; flex-direction: column; 
+      justify-content: flex-start; width: 100%; padding-top: 20px;
     }
 
-    /* ปุ่มคำตอบ: สีขาวล้วน ไม่มีกรอบสีเขียว ตามตัวอย่าง */
-    .choices-stack { width: 100%; max-width: 320px; margin: 10px auto; }
+    /* ปุ่มคำตอบ: ขาวล้วน ไม่มีกรอบ */
+    .choices-stack { width: 100%; max-width: 320px; margin: 0 auto; }
     .choice-btn { 
-      width: 100%; background: #ffffff; border: none; 
-      padding: 14px; margin: 8px 0; border-radius: 50px; 
-      font-size: 1.1rem; color: var(--primary-green); 
-      font-weight: 500; cursor: pointer;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.05); /* เงาบางๆ ให้ดูนูนเหมือนตัวอย่าง */
+      width: 100%; background: #ffffff; border: none; padding: 14px; 
+      margin: 8px 0; border-radius: 50px; font-size: 1.1rem; 
+      color: var(--primary-green); font-weight: 500; cursor: pointer;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.06);
     }
 
-    .feedback-text { font-weight: 700; font-size: 1.4rem; margin-top: 15px; }
+    /* ส่วน Feedback แบบจองพื้นที่ (Visibility hidden แทน display none) */
+    .feedback-area { min-height: 120px; margin-top: 10px; visibility: hidden; }
+    .feedback-area.active { visibility: visible; }
+    .feedback-text { font-weight: 700; font-size: 1.4rem; }
+    .emoji-display { font-size: 3.5rem; margin-top: 5px; }
+
     .score-big { font-size: 5.5rem; font-weight: 700; line-height: 1; margin: 0; }
-    .emoji-display { font-size: 3.5rem; margin: 10px 0; }
+    .btn-start { background: var(--primary-green); color: #fff; border: none; padding: 12px 60px; border-radius: 50px; font-size: 1.3rem; font-weight: 600; cursor: pointer; }
   </style>
 </head>
 <body>
@@ -66,26 +63,20 @@
     <button class="btn-start" onclick="startGame()">เริ่มเล่นเกม</button>
   </div>
   <img src="https://i.ibb.co/zWfz6wJJ/image.png" class="center-img">
-  <div class="footer">
-    <p style="font-size: 0.8rem; margin-bottom: 5px;">ทิ้งถูกที่ ลดถุงขยะย่อยสลายได้</p>
-    <img src="https://i.ibb.co/CsQTb51N/image.png" class="partner-logos">
-  </div>
+  <div class="footer"><img src="https://i.ibb.co/CsQTb51N/image.png" class="partner-logos"></div>
 </div>
 
 <div id="game-page" class="container hidden">
   <img src="https://i.ibb.co/h1J2dHjq/image.png" class="main-logo">
-  <div style="flex-grow: 1; display: flex; flex-direction: column; justify-content: center; width: 100%;">
+  <div class="game-content">
     <h1 id="question-text"></h1>
     <div id="choices-container" class="choices-stack"></div>
-    <div id="feedback" class="hidden">
+    <div id="feedback-area" class="feedback-area">
       <div id="feedback-msg" class="feedback-text"></div>
       <div id="feedback-emoji" class="emoji-display"></div>
     </div>
   </div>
-  <div class="footer">
-    <p style="font-size: 0.7rem;">ทิ้งถูกที่ ลดถุงขยะย่อยสลายได้</p>
-    <img src="https://i.ibb.co/CsQTb51N/image.png" class="partner-logos">
-  </div>
+  <div class="footer"><img src="https://i.ibb.co/CsQTb51N/image.png" class="partner-logos"></div>
 </div>
 
 <div id="result-page" class="container hidden">
@@ -99,13 +90,11 @@
   </div>
   <div class="footer">
     <p style="font-weight: 700;">🍃 ขอบคุณที่ช่วยกัน 🌍</p>
-    <p style="font-size: 0.8rem;">การแยกขยะวันนี้ คุณพี่ช่วยโลกได้เยอะเลยล่ะ!</p>
     <img src="https://i.ibb.co/CsQTb51N/image.png" class="partner-logos">
   </div>
 </div>
 
 <script>
-  const LIFF_ID = "2008938028-gCqozVV5";
   const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzjA_-iFEqrdTJzHlngMAIg1HQ7b0Bhot8eOHvRvShzmxHgCgGkngfD7CQOmSr50viz/exec";
 
   const questions = [
@@ -147,7 +136,7 @@
 
   async function initLIFF() {
     try {
-      await liff.init({ liffId: LIFF_ID });
+      await liff.init({ liffId: "2008938028-gCqozVV5" });
       if (liff.isLoggedIn()) {
         const profile = await liff.getProfile();
         playerName = profile.displayName;
@@ -167,7 +156,7 @@
     document.getElementById('question-text').innerHTML = data.q;
     const container = document.getElementById('choices-container');
     container.innerHTML = "";
-    document.getElementById('feedback').classList.add('hidden');
+    document.getElementById('feedback-area').classList.remove('active');
 
     data.options.forEach((opt, i) => {
       const btn = document.createElement('button');
@@ -187,7 +176,7 @@
     document.getElementById('feedback-msg').innerText = isCorrect ? data.cMsg : data.wMsg;
     document.getElementById('feedback-msg').style.color = isCorrect ? "var(--primary-green)" : "#b52424";
     document.getElementById('feedback-emoji').innerText = isCorrect ? data.emojis[0] : data.emojis[1];
-    document.getElementById('feedback').classList.remove('hidden');
+    document.getElementById('feedback-area').classList.add('active');
     
     document.querySelectorAll('.choice-btn').forEach(b => b.disabled = true);
     
@@ -207,7 +196,6 @@
     document.getElementById('result-title').innerText = res.title;
     document.getElementById('result-desc').innerText = res.desc;
     document.getElementById('result-emoji').innerText = res.emoji;
-    
     saveToSheet();
   }
 
