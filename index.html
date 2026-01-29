@@ -4,60 +4,127 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>ปฏิบัติการแยกกู้(KU)โลก</title>
-  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@500;600;700&display=swap" rel="stylesheet">
+  
+  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
   <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
   <style>
-    :root { --primary-green: #067957; --accent-green: #53b73b; --error-red: #b52424; --bg-light: #ebf7ef; }
-    body { margin: 0; font-family: 'Prompt', sans-serif; background-color: var(--bg-light); color: var(--primary-green); height: 100vh; overflow: hidden; display: flex; align-items: center; justify-content: center; }
-    
-    .container { 
-      width: 100%; height: 100vh; display: flex; flex-direction: column; 
-      align-items: center; justify-content: space-between; 
-      padding: 35px 25px; box-sizing: border-box; text-align: center;
+    /* กำหนดตัวแปรและฟอนต์หลัก */
+    :root { 
+      --primary-green: #067957; 
+      --accent-green: #53b73b; 
+      --error-red: #b52424; 
+      --bg-light: #ebf7ef; 
     }
+
+    * {
+      font-family: 'Prompt', sans-serif !important; /* บังคับใช้ Prompt ทุกจุด */
+      box-sizing: border-box;
+    }
+
+    body { 
+      margin: 0; 
+      background-color: var(--bg-light); 
+      color: var(--primary-green); 
+      height: 100vh; 
+      overflow: hidden; 
+      display: flex;
+      flex-direction: column;
+    }
+
+    .container { 
+      width: 100%; 
+      height: 100vh; 
+      display: flex; 
+      flex-direction: column; 
+      align-items: center; 
+      justify-content: space-between; 
+      padding: 30px 25px; 
+      text-align: center;
+    }
+
     .hidden { display: none !important; }
 
-    /* แก้ไขเรื่องรูปภาพ: ใช้ Aspect Ratio ป้องกันการบีบอัดเป็นสี่เหลี่ยม */
+    /* แก้ไขปัญหา Logo เหลี่ยม: ลบ Background/Border และบังคับ Ratio */
     img { 
       max-width: 100%; 
-      height: auto !important; /* บังคับให้สูงตามสัดส่วนกว้าง */
-      object-fit: contain; 
+      height: auto !important; 
+      background: transparent !important; 
+      border: none !important;
+      box-shadow: none !important;
+      outline: none !important;
     }
-    .main-logo { width: 140px; margin-bottom: 5px; }
-    .center-img { width: 110px; margin: 15px 0; }
-    .partner-logos { width: 150px; }
 
-    h1 { font-size: 1.8rem; font-weight: 700; margin: 5px 0; line-height: 1.2; }
+    .main-logo { width: 150px; }
+    .center-img { width: 120px; margin: 10px 0; }
+    .partner-logos { width: 160px; }
+
+    h1 { 
+      font-size: 1.8rem; 
+      font-weight: 700; 
+      margin: 10px 0; 
+      line-height: 1.2; 
+      color: var(--primary-green);
+    }
+
+    p { font-size: 1.1rem; margin: 5px 0; font-weight: 500; }
+
+    /* ปุ่มเริ่มเกม */
     .btn-start { 
-      background: var(--primary-green); color: #fff; border: none; 
-      padding: 14px 60px; border-radius: 50px; font-size: 1.3rem; 
-      font-weight: 600; cursor: pointer; margin-top: 15px;
+      background: var(--primary-green); 
+      color: #fff; 
+      border: none; 
+      padding: 12px 60px; 
+      border-radius: 50px; 
+      font-size: 1.3rem; 
+      font-weight: 600; 
+      cursor: pointer; 
+      margin-top: 15px;
     }
-    
-    .choices-stack { width: 100%; max-width: 320px; margin: 10px auto; }
+
+    /* ปุ่มคำตอบ: ใช้ฟอนต์ Prompt และขนาดที่พอดี */
+    .choices-stack { 
+      width: 100%; 
+      max-width: 320px; 
+      margin: 10px auto; 
+    }
+
     .choice-btn { 
-      width: 100%; background: #fff; border: 2.5px solid var(--primary-green); 
-      padding: 12px; margin: 8px 0; border-radius: 50px; font-size: 1.05rem; 
-      color: var(--primary-green); font-weight: 600; cursor: pointer;
+      width: 100%; 
+      background: #fff; 
+      border: 2px solid var(--primary-green); 
+      padding: 12px; 
+      margin: 8px 0; 
+      border-radius: 50px; 
+      font-size: 1.1rem; /* ขนาดฟอนต์คำตอบ */
+      color: var(--primary-green); 
+      font-weight: 600; 
+      cursor: pointer;
+      transition: 0.2s;
     }
-    
-    .score-big { font-size: 5.5rem; font-weight: 700; color: var(--primary-green); line-height: 1; margin: 0; }
+
+    .choice-btn:active { background: var(--bg-light); }
+
+    .score-big { font-size: 5.5rem; font-weight: 700; line-height: 1; margin: 0; }
     .emoji-display { font-size: 3.5rem; margin: 5px 0; }
-    .footer { width: 100%; display: flex; flex-direction: column; align-items: center; }
+    
+    .footer { width: 100%; }
+    .footer-text { font-size: 0.8rem; margin-bottom: 5px; font-weight: 500; }
+
   </style>
 </head>
 <body>
 
 <div id="start-page" class="container">
-  <img src="https://i.ibb.co/h1J2dHjq/image.png" class="main-logo" alt="Main Logo">
+  <img src="https://i.ibb.co/h1J2dHjq/image.png" class="main-logo" alt="Logo">
   <div>
     <h1>สวัสดี<br><span id="user-name">คุณพี่</span></h1>
     <p>คุณแยกขยะเก่งแค่ไหน มาทดสอบกัน!</p>
     <button class="btn-start" onclick="startGame()">เริ่มเล่นเกม</button>
   </div>
-  <img src="https://i.ibb.co/zWfz6wJJ/image.png" class="center-img" alt="Bin Logo">
+  <img src="https://i.ibb.co/zWfz6wJJ/image.png" class="center-img" alt="Illustration">
   <div class="footer">
-    <p style="font-size: 0.75rem; margin-bottom: 8px;">ทิ้งถูกที่ ลดถุงขยะย่อยสลายได้</p>
+    <p class="footer-text">ทิ้งถูกที่ ลดถุงขยะย่อยสลายได้</p>
     <img src="https://i.ibb.co/CsQTb51N/image.png" class="partner-logos" alt="Partners">
   </div>
 </div>
@@ -65,9 +132,7 @@
 <div id="game-page" class="container hidden">
   <img src="https://i.ibb.co/h1J2dHjq/image.png" class="main-logo">
   <div style="flex-grow: 1; display: flex; flex-direction: column; justify-content: center; width: 100%;">
-    <h1 id="question-text"></h1>
-    <div id="choices-container" class="choices-stack"></div>
-    <div id="feedback" class="hidden">
+    <h1 id="question-text"></h1> <div id="choices-container" class="choices-stack"></div> <div id="feedback" class="hidden">
       <div id="feedback-msg" style="font-weight: 700; font-size: 1.2rem;"></div>
       <div id="feedback-emoji" class="emoji-display"></div>
     </div>
@@ -79,7 +144,7 @@
   <img src="https://i.ibb.co/h1J2dHjq/image.png" class="main-logo">
   <div style="margin-top: -10px;">
     <p id="final-score" class="score-big">0/4</p>
-    <p id="result-user-name" style="font-weight: 600;"></p>
+    <p id="result-user-name" style="font-weight: 600; font-size: 1.2rem;"></p>
     <h1 id="result-title"></h1>
     <p id="result-desc" style="font-weight: 600;"></p>
     <div id="result-emoji" class="emoji-display"></div>
@@ -103,7 +168,7 @@
 
   const results = {
     0: { title: "เหลือจะเชื่อ!", desc: "สงสัยนอนน้อย รู้สึกอ่อมแทน", emoji: "😔" },
-    1: { title: "เกือบไปแล้ว!", desc: "เกือบละ เกือบผิดหมดทุกข้อละ", emoji: "🙋‍♀️" },
+    1: { title: "เกือบไปแล้ว!", desc: "เกือบผิดหมดทุกข้อละนะ", emoji: "🙋‍♀️" },
     2: { title: "จะลำแบ้!", desc: "ผิดขนาดนี้ พี่ถังขยะร้องไห้แล้ว", emoji: "😢" },
     3: { title: "ใกล้ความจริง!", desc: "แยกไม่เนียน ไปเรียนมาใหม่", emoji: "😘" },
     4: { title: "ทำได้แล้ว!", desc: "เก่งขนาดนี้ พี่ซาเล้งมีหนาว", emoji: "😍" }
@@ -117,11 +182,9 @@
       if (liff.isLoggedIn()) {
         const profile = await liff.getProfile();
         playerName = profile.displayName;
+        document.getElementById('user-name').innerText = playerName;
       }
-    } catch(e) {}
-    finally {
-      document.getElementById('user-name').innerText = playerName;
-    }
+    } catch(e) { console.log("LIFF Init Error"); }
   }
 
   function startGame() {
@@ -183,9 +246,8 @@
     fetch(SCRIPT_URL, {
       method: 'POST',
       mode: 'no-cors',
-      cache: 'no-cache',
       body: JSON.stringify({ name: playerName, score: score, answers: userAnswers })
-    }).catch(e => {});
+    }).catch(e => console.log("Save error"));
   }
 
   window.onload = initLIFF;
