@@ -190,7 +190,7 @@
     const data = questions[currentStep];
     const isCorrect = (idx === data.answer);
     
-    // บันทึกคำตอบที่เลือกลง Log
+    // เก็บ Log คำตอบลง Array
     userAnswers.push(data.options[idx]);
     if(isCorrect) score++;
 
@@ -220,20 +220,26 @@
     document.getElementById('result-desc').innerText = res.desc;
     document.getElementById('result-emoji').innerText = res.emoji;
     
-    // ส่งข้อมูลไปเก็บใน Google Sheets (มีชื่อ, คะแนน, และคำตอบทั้งหมด)
     saveToSheet();
   }
 
   function saveToSheet() {
+    // ปรับ Key ให้ตรงกับหัวตาราง Google Sheets ของคุณพี่
+    const payload = {
+      Name: playerName,
+      Score: score,
+      Q1_Answer: userAnswers[0] || "",
+      Q2_Answer: userAnswers[1] || "",
+      Q3_Answer: userAnswers[2] || "",
+      Q4_Answer: userAnswers[3] || ""
+    };
+
     fetch(SCRIPT_URL, { 
       method: 'POST', 
       mode: 'no-cors', 
-      body: JSON.stringify({ 
-        name: playerName, 
-        score: score,
-        answers: userAnswers.join(', ') // รวมคำตอบทุข้อส่งไปเป็นข้อความเดียว
-      }) 
-    }).catch(e => {});
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload) 
+    }).catch(e => console.error(e));
   }
 
   window.onload = initLIFF;
