@@ -10,66 +10,38 @@
     :root { --primary-green: #067957; --bg-light: #ebf7ef; }
     * { font-family: 'Prompt', sans-serif !important; box-sizing: border-box; }
     body { margin: 0; background-color: var(--bg-light); color: var(--primary-green); height: 100vh; overflow: hidden; }
-
-    .container { 
-      width: 100%; height: 100vh; display: flex; flex-direction: column; 
-      align-items: center; justify-content: space-between; 
-      padding: 15px 25px; text-align: center;
-    }
-
+    .container { width: 100%; height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: space-between; padding: 30px 25px; text-align: center; }
     .hidden { display: none !important; }
-
-    /* --- ปรับขนาด Logo ใหม่ตามที่ต้องการ --- */
-    img { 
-      max-width: 100%; 
-      height: auto !important; 
-      object-fit: contain; 
-      display: block; 
-      margin: 0 auto; 
-      background-color: transparent !important;
-    }
-
-    .main-logo { 
-      width: 120px;       /* ขนาดที่เล็กลง ดูสะอาดตาขึ้น */
-      max-height: 70px; 
-      margin-bottom: 5px;
-    }
-
-    .center-img { 
-      width: 110px; 
-      margin: 5px 0; 
-    }
-
-    .partner-logos { 
-      width: 160px; 
-      margin-top: 5px;
-    }
-
-    h1 { font-size: 1.6rem; font-weight: 700; margin: 8px 0; line-height: 1.2; }
-    .game-content { flex-grow: 1; display: flex; flex-direction: column; justify-content: flex-start; width: 100%; padding-top: 10px; }
-    .choices-stack { width: 100%; max-width: 320px; margin: 0 auto; }
-    .choice-btn { width: 100%; background: #ffffff; border: none; padding: 13px; margin: 6px 0; border-radius: 50px; font-size: 1.05rem; color: var(--primary-green); font-weight: 500; cursor: pointer; box-shadow: 0 3px 10px rgba(0,0,0,0.06); outline: none; }
-    .feedback-area { min-height: 90px; margin-top: 5px; visibility: hidden; }
-    .feedback-area.active { visibility: visible; }
-    .feedback-text { font-weight: 700; font-size: 1.2rem; }
-    .emoji-display { font-size: 2.5rem; margin-top: 5px; }
-    .score-big { font-size: 4.5rem; font-weight: 700; line-height: 1; margin: 0; }
-    .btn-start { background: var(--primary-green); color: #fff; border: none; padding: 12px 50px; border-radius: 50px; font-size: 1.2rem; font-weight: 600; cursor: pointer; }
     #loading-page { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-light); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 99; }
+    .loading-emoji { font-size: 2rem; margin-bottom: 5px; }
+    img { max-width: 100%; height: auto !important; display: block; margin: 0 auto; }
+    .main-logo { width: 140px; }
+    .center-img { width: 120px; margin: 15px 0; }
+    .partner-logos { width: 160px; }
+    h1 { font-size: 1.8rem; font-weight: 700; margin: 10px 0; line-height: 1.2; }
+    .game-content { flex-grow: 1; display: flex; flex-direction: column; justify-content: flex-start; width: 100%; padding-top: 20px; }
+    .choices-stack { width: 100%; max-width: 320px; margin: 0 auto; }
+    .choice-btn { width: 100%; background: #ffffff; border: none; padding: 14px; margin: 8px 0; border-radius: 50px; font-size: 1.1rem; color: var(--primary-green); font-weight: 500; cursor: pointer; box-shadow: 0 3px 10px rgba(0,0,0,0.06); outline: none; }
+    .feedback-area { min-height: 120px; margin-top: 10px; visibility: hidden; }
+    .feedback-area.active { visibility: visible; }
+    .feedback-text { font-weight: 700; font-size: 1.4rem; }
+    .emoji-display { font-size: 3.5rem; margin-top: 5px; }
+    .score-big { font-size: 5.5rem; font-weight: 700; line-height: 1; margin: 0; }
+    .btn-start { background: var(--primary-green); color: #fff; border: none; padding: 12px 60px; border-radius: 50px; font-size: 1.3rem; font-weight: 600; cursor: pointer; }
   </style>
 </head>
 <body>
 
 <div id="loading-page">
-  <div style="font-size: 2rem;">⌛</div>
-  <p style="font-size: 1.2rem;">กำลังเตรียมความพร้อม...</p>
+  <div class="loading-emoji">⌛</div>
+  <p style="font-size: 1.3rem;">กำลังเตรียมความพร้อมเพื่อโลกสีเขียว...</p>
 </div>
 
 <div id="start-page" class="container hidden">
   <img src="https://i.ibb.co/h1J2dHjq/image.png" class="main-logo">
   <div>
     <h1 id="user-display">สวัสดี คุณผู้เล่น</h1>
-    <p style="margin-top: 0;">คุณแยกขยะเก่งแค่ไหน มาทดสอบกัน!</p>
+    <p>คุณแยกขยะเก่งแค่ไหน มาทดสอบกัน!</p>
     <button class="btn-start" onclick="startGame()">เริ่มเล่นเกม</button>
   </div>
   <img src="https://i.ibb.co/zWfz6wJJ/image.png" class="center-img">
@@ -93,13 +65,13 @@
   <img src="https://i.ibb.co/h1J2dHjq/image.png" class="main-logo">
   <div>
     <p id="final-score" class="score-big">0/4</p>
-    <p id="result-user-name" style="font-weight: 600; font-size: 1.1rem; margin-bottom: 5px;"></p>
+    <p id="result-user-name" style="font-weight: 600; font-size: 1.2rem;"></p>
     <h1 id="result-title"></h1>
     <p id="result-desc" style="font-weight: 600;"></p>
     <div id="result-emoji" class="emoji-display"></div>
   </div>
   <div class="footer">
-    <p style="font-weight: 700; margin-bottom: 5px;">🍃 ขอบคุณที่ช่วยกัน 🌍</p>
+    <p style="font-weight: 700;">🍃 ขอบคุณที่ช่วยกัน 🌍</p>
     <img src="https://i.ibb.co/CsQTb51N/image.png" class="partner-logos">
   </div>
 </div>
@@ -125,7 +97,7 @@
         playerName = profile.displayName;
         document.getElementById('user-display').innerHTML = "สวัสดี " + playerName;
       }
-    } catch(e) {}
+    } catch(e) { console.error("LIFF Init Error", e); }
     document.getElementById('loading-page').classList.add('hidden');
     document.getElementById('start-page').classList.remove('hidden');
   }
@@ -179,7 +151,16 @@
 
   function saveToSheet() {
     const payload = { Name: playerName, Score: score, Q1_Answer: userAnswers[0] || "", Q2_Answer: userAnswers[1] || "", Q3_Answer: userAnswers[2] || "", Q4_Answer: userAnswers[3] || "" };
-    fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) }).catch(e => {});
+    
+    // ลองส่งแบบ Fetch ปกติเพื่อดู Error
+    fetch(SCRIPT_URL, { 
+      method: 'POST', 
+      mode: 'no-cors', 
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload) 
+    })
+    .then(() => console.log("Data sent to script successfully (no-cors mode)"))
+    .catch(err => console.error("Fetch Error:", err));
   }
 
   window.onload = initLIFF;
