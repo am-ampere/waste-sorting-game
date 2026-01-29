@@ -8,74 +8,85 @@
   <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
   <style>
     :root { --primary-green: #067957; --accent-green: #53b73b; --error-red: #b52424; --bg-light: #ebf7ef; }
-    body { margin: 0; font-family: 'Prompt', sans-serif; background-color: var(--bg-light); color: var(--primary-green); height: 100vh; overflow: hidden; }
-    .container { height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: space-between; padding: 30px 25px; box-sizing: border-box; text-align: center; }
-    .hidden { display: none !important; }
+    body { margin: 0; font-family: 'Prompt', sans-serif; background-color: var(--bg-light); color: var(--primary-green); height: 100vh; overflow: hidden; display: flex; align-items: center; justify-content: center; }
     
-    /* ปรับแต่งรูปภาพให้คงสัดส่วน (Aspect Ratio) ไม่เป็นสี่เหลี่ยมจัตุรัสที่ถูกบังคับ */
-    .img-container { width: 100%; display: flex; justify-content: center; align-items: center; }
-    .main-logo { width: 160px; height: auto; max-height: 120px; object-fit: contain; }
-    .center-img { width: 120px; height: auto; max-height: 120px; object-fit: contain; margin: 10px 0; }
-    .partner-logos { width: 180px; height: auto; max-height: 80px; object-fit: contain; }
+    .container { 
+      width: 100%; height: 100vh; display: flex; flex-direction: column; 
+      align-items: center; justify-content: space-between; 
+      padding: 35px 25px; box-sizing: border-box; text-align: center;
+    }
+    .hidden { display: none !important; }
+
+    /* แก้ไขเรื่องรูปภาพ: ใช้ Aspect Ratio ป้องกันการบีบอัดเป็นสี่เหลี่ยม */
+    img { 
+      max-width: 100%; 
+      height: auto !important; /* บังคับให้สูงตามสัดส่วนกว้าง */
+      object-fit: contain; 
+    }
+    .main-logo { width: 140px; margin-bottom: 5px; }
+    .center-img { width: 110px; margin: 15px 0; }
+    .partner-logos { width: 150px; }
 
     h1 { font-size: 1.8rem; font-weight: 700; margin: 5px 0; line-height: 1.2; }
-    .btn-start { background: var(--primary-green); color: #fff; border: none; padding: 14px 60px; border-radius: 50px; font-size: 1.3rem; font-weight: 600; cursor: pointer; margin-top: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+    .btn-start { 
+      background: var(--primary-green); color: #fff; border: none; 
+      padding: 14px 60px; border-radius: 50px; font-size: 1.3rem; 
+      font-weight: 600; cursor: pointer; margin-top: 15px;
+    }
     
-    /* ส่วนคำตอบ */
     .choices-stack { width: 100%; max-width: 320px; margin: 10px auto; }
-    .choice-btn { width: 100%; background: #fff; border: 2px solid var(--primary-green); padding: 12px; margin: 8px 0; border-radius: 50px; font-size: 1.1rem; color: var(--primary-green); font-weight: 600; cursor: pointer; display: block; }
+    .choice-btn { 
+      width: 100%; background: #fff; border: 2.5px solid var(--primary-green); 
+      padding: 12px; margin: 8px 0; border-radius: 50px; font-size: 1.05rem; 
+      color: var(--primary-green); font-weight: 600; cursor: pointer;
+    }
     
     .score-big { font-size: 5.5rem; font-weight: 700; color: var(--primary-green); line-height: 1; margin: 0; }
-    .emoji-display { font-size: 3.5rem; margin: 10px 0; }
-    
-    .loader { border: 5px solid #f3f3f3; border-top: 5px solid var(--primary-green); border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; }
-    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    .emoji-display { font-size: 3.5rem; margin: 5px 0; }
+    .footer { width: 100%; display: flex; flex-direction: column; align-items: center; }
   </style>
 </head>
 <body>
 
-<div id="loading-page" class="container" style="justify-content: center;"><div class="loader"></div></div>
-
-<div id="start-page" class="container hidden">
-  <div class="img-container"><img src="https://i.ibb.co/h1J2dHjq/image.png" class="main-logo" onerror="this.src='https://via.placeholder.com/150?text=LOGO'"></div>
+<div id="start-page" class="container">
+  <img src="https://i.ibb.co/h1J2dHjq/image.png" class="main-logo" alt="Main Logo">
   <div>
-    <h1>สวัสดี<br><span id="user-name" style="color: var(--primary-green);">...</span></h1>
-    <p style="font-size: 1.1rem; margin-top: 5px;">คุณแยกขยะเก่งแค่ไหน มาทดสอบกัน!</p>
+    <h1>สวัสดี<br><span id="user-name">คุณพี่</span></h1>
+    <p>คุณแยกขยะเก่งแค่ไหน มาทดสอบกัน!</p>
     <button class="btn-start" onclick="startGame()">เริ่มเล่นเกม</button>
   </div>
-  <div class="img-container"><img src="https://i.ibb.co/zWfz6wJJ/image.png" class="center-img"></div>
+  <img src="https://i.ibb.co/zWfz6wJJ/image.png" class="center-img" alt="Bin Logo">
   <div class="footer">
-    <p style="font-size: 0.8rem; margin-bottom: 8px; font-weight: 500;">ทิ้งถูกที่ ลดถุงขยะย่อยสลายได้</p>
-    <div class="img-container"><img src="https://i.ibb.co/CsQTb51N/image.png" class="partner-logos"></div>
+    <p style="font-size: 0.75rem; margin-bottom: 8px;">ทิ้งถูกที่ ลดถุงขยะย่อยสลายได้</p>
+    <img src="https://i.ibb.co/CsQTb51N/image.png" class="partner-logos" alt="Partners">
   </div>
 </div>
 
 <div id="game-page" class="container hidden">
-  <div class="img-container"><img src="https://i.ibb.co/h1J2dHjq/image.png" class="main-logo"></div>
+  <img src="https://i.ibb.co/h1J2dHjq/image.png" class="main-logo">
   <div style="flex-grow: 1; display: flex; flex-direction: column; justify-content: center; width: 100%;">
-    <h1 id="question-text" style="margin-bottom: 15px;"></h1>
+    <h1 id="question-text"></h1>
     <div id="choices-container" class="choices-stack"></div>
     <div id="feedback" class="hidden">
       <div id="feedback-msg" style="font-weight: 700; font-size: 1.2rem;"></div>
       <div id="feedback-emoji" class="emoji-display"></div>
     </div>
   </div>
-  <div class="footer"><div class="img-container"><img src="https://i.ibb.co/CsQTb51N/image.png" class="partner-logos"></div></div>
+  <img src="https://i.ibb.co/CsQTb51N/image.png" class="partner-logos">
 </div>
 
 <div id="result-page" class="container hidden">
-  <div class="img-container"><img src="https://i.ibb.co/h1J2dHjq/image.png" class="main-logo"></div>
+  <img src="https://i.ibb.co/h1J2dHjq/image.png" class="main-logo">
   <div style="margin-top: -10px;">
     <p id="final-score" class="score-big">0/4</p>
-    <p id="result-user-name" style="font-weight: 600; font-size: 1.2rem; margin: 10px 0;"></p>
+    <p id="result-user-name" style="font-weight: 600;"></p>
     <h1 id="result-title"></h1>
-    <p id="result-desc" style="color: var(--error-red); font-weight: 600;"></p>
+    <p id="result-desc" style="font-weight: 600;"></p>
     <div id="result-emoji" class="emoji-display"></div>
   </div>
-  <div class="footer" style="width: 100%;">
-    <p style="font-weight: 700; color: var(--primary-green);">🍃 ขอบคุณที่ช่วยกัน 🌍</p>
-    <p style="font-size: 0.85rem; margin-bottom: 10px;">การแยกขยะวันนี้ คุณพี่ช่วยโลกได้เยอะเลยล่ะ!</p>
-    <div class="img-container"><img src="https://i.ibb.co/CsQTb51N/image.png" class="partner-logos"></div>
+  <div class="footer">
+    <p style="font-weight: 700;">🍃 ขอบคุณที่ช่วยกัน 🌍</p>
+    <img src="https://i.ibb.co/CsQTb51N/image.png" class="partner-logos">
   </div>
 </div>
 
@@ -92,7 +103,7 @@
 
   const results = {
     0: { title: "เหลือจะเชื่อ!", desc: "สงสัยนอนน้อย รู้สึกอ่อมแทน", emoji: "😔" },
-    1: { title: "คุณพี่ทวนความรู้สุด!", desc: "เกือบละ เกือบผิดหมดทุกข้อละ", emoji: "🙋‍♀️" },
+    1: { title: "เกือบไปแล้ว!", desc: "เกือบละ เกือบผิดหมดทุกข้อละ", emoji: "🙋‍♀️" },
     2: { title: "จะลำแบ้!", desc: "ผิดขนาดนี้ พี่ถังขยะร้องไห้แล้ว", emoji: "😢" },
     3: { title: "ใกล้ความจริง!", desc: "แยกไม่เนียน ไปเรียนมาใหม่", emoji: "😘" },
     4: { title: "ทำได้แล้ว!", desc: "เก่งขนาดนี้ พี่ซาเล้งมีหนาว", emoji: "😍" }
@@ -107,11 +118,9 @@
         const profile = await liff.getProfile();
         playerName = profile.displayName;
       }
-    } catch(e) { console.log("LIFF failed"); }
+    } catch(e) {}
     finally {
       document.getElementById('user-name').innerText = playerName;
-      document.getElementById('loading-page').classList.add('hidden');
-      document.getElementById('start-page').classList.remove('hidden');
     }
   }
 
@@ -154,7 +163,7 @@
       currentStep++;
       if(currentStep < questions.length) showQuestion();
       else finishGame();
-    }, 2000);
+    }, 1800);
   }
 
   function finishGame() {
@@ -174,8 +183,9 @@
     fetch(SCRIPT_URL, {
       method: 'POST',
       mode: 'no-cors',
+      cache: 'no-cache',
       body: JSON.stringify({ name: playerName, score: score, answers: userAnswers })
-    }).catch(e => console.log("Save error"));
+    }).catch(e => {});
   }
 
   window.onload = initLIFF;
