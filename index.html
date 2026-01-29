@@ -20,6 +20,7 @@
     }
     .hidden { display: none !important; }
 
+    /* หน้าโหลดขนาดจิ๋ว 1.3rem */
     #loading-page {
       position: fixed; top: 0; left: 0; width: 100%; height: 100%;
       background: var(--bg-light); display: flex; flex-direction: column;
@@ -103,8 +104,8 @@
 </div>
 
 <script>
-  // ใช้ URL ล่าสุดที่คุณให้มา
-  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzFp9nTIsA_MoKzv5iWr6PQdS8zY08osLyOJG_X6VpLVI5V0H8OYTKwKdPpNvMyrJzF/exec";
+  // URL ล่าสุดที่คุณส่งมา (เชื่อมกับแผ่นงาน Responses)
+  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz-5DvD7l-KbqG_X4IpI32FPrkQRtm6hQ-ZNc2s9MiAyiB118lMm280rJqce7r1-YYk/exec";
   
   let playerName = "ผู้เล่น";
   let currentStep = 0, score = 0, userAnswers = [];
@@ -222,7 +223,7 @@
   }
 
   function saveToSheet() {
-    // ชื่อ Key (เช่น Name, Score, Q1_Answer) ต้องตรงกับหัวตารางใน Google Sheets เป๊ะๆ
+    // Key ตรงตามหัวตาราง: Name, Score, Q1_Answer, Q2_Answer, Q3_Answer, Q4_Answer
     const payload = {
       Name: playerName,
       Score: score,
