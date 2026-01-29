@@ -9,31 +9,80 @@
   <style>
     :root { --primary-green: #067957; --bg-light: #ebf7ef; }
     * { font-family: 'Prompt', sans-serif !important; box-sizing: border-box; }
-    body { margin: 0; background-color: var(--bg-light); color: var(--primary-green); height: 100vh; overflow: hidden; }
-    .container { width: 100%; height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: space-between; padding: 30px 25px; text-align: center; }
+    
+    body { 
+      margin: 0; background-color: var(--bg-light); color: var(--primary-green); 
+      height: 100vh; overflow: hidden;
+    }
+
+    .container { 
+      width: 100%; height: 100vh; display: flex; flex-direction: column; 
+      align-items: center; justify-content: space-between; 
+      padding: 20px 25px; text-align: center;
+    }
+
     .hidden { display: none !important; }
-    #loading-page { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-light); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 99; }
-    .loading-emoji { font-size: 2rem; margin-bottom: 5px; }
-    img { max-width: 100%; height: auto !important; display: block; margin: 0 auto; }
-    .main-logo { width: 140px; }
-    .center-img { width: 120px; margin: 15px 0; }
-    .partner-logos { width: 160px; }
-    h1 { font-size: 1.8rem; font-weight: 700; margin: 10px 0; line-height: 1.2; }
-    .game-content { flex-grow: 1; display: flex; flex-direction: column; justify-content: flex-start; width: 100%; padding-top: 20px; }
+
+    /* --- แก้ไขส่วนการแสดงผลรูปภาพ (Logo) --- */
+    img { 
+      max-width: 100%; 
+      height: auto !important; /* ป้องกันการโดนบีบแนวตั้ง */
+      object-fit: contain;    /* ป้องกันการโดนครอบตัดรูป */
+      display: block; 
+      margin: 0 auto; 
+      background-color: transparent !important;
+    }
+
+    .main-logo { 
+      width: 180px; /* ปรับขนาดให้ใหญ่ขึ้นตามที่ MKT แนะนำ */
+      margin-bottom: 5px;
+    }
+
+    .center-img { 
+      width: 140px; 
+      margin: 10px 0; 
+    }
+
+    .partner-logos { 
+      width: 200px; 
+      margin-top: 5px;
+    }
+
+    /* --- ส่วนอื่นๆ ของเกม --- */
+    h1 { font-size: 1.7rem; font-weight: 700; margin: 10px 0; line-height: 1.2; }
+    
+    .game-content { 
+      flex-grow: 1; display: flex; flex-direction: column; 
+      justify-content: flex-start; width: 100%; padding-top: 15px;
+    }
+
     .choices-stack { width: 100%; max-width: 320px; margin: 0 auto; }
-    .choice-btn { width: 100%; background: #ffffff; border: none; padding: 14px; margin: 8px 0; border-radius: 50px; font-size: 1.1rem; color: var(--primary-green); font-weight: 500; cursor: pointer; box-shadow: 0 3px 10px rgba(0,0,0,0.06); outline: none; }
-    .feedback-area { min-height: 120px; margin-top: 10px; visibility: hidden; }
+    .choice-btn { 
+      width: 100%; background: #ffffff; border: none; padding: 14px; 
+      margin: 8px 0; border-radius: 50px; font-size: 1.1rem; 
+      color: var(--primary-green); font-weight: 500; cursor: pointer;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.06); outline: none;
+    }
+
+    .feedback-area { min-height: 100px; margin-top: 10px; visibility: hidden; }
     .feedback-area.active { visibility: visible; }
-    .feedback-text { font-weight: 700; font-size: 1.4rem; }
-    .emoji-display { font-size: 3.5rem; margin-top: 5px; }
-    .score-big { font-size: 5.5rem; font-weight: 700; line-height: 1; margin: 0; }
+    .feedback-text { font-weight: 700; font-size: 1.3rem; }
+    .emoji-display { font-size: 3rem; margin-top: 5px; }
+
+    .score-big { font-size: 5rem; font-weight: 700; line-height: 1; margin: 0; }
     .btn-start { background: var(--primary-green); color: #fff; border: none; padding: 12px 60px; border-radius: 50px; font-size: 1.3rem; font-weight: 600; cursor: pointer; }
+
+    #loading-page {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: var(--bg-light); display: flex; flex-direction: column;
+      justify-content: center; align-items: center; z-index: 99;
+    }
   </style>
 </head>
 <body>
 
 <div id="loading-page">
-  <div class="loading-emoji">⌛</div>
+  <div style="font-size: 2rem;">⌛</div>
   <p style="font-size: 1.3rem;">กำลังเตรียมความพร้อมเพื่อโลกสีเขียว...</p>
 </div>
 
@@ -97,7 +146,7 @@
         playerName = profile.displayName;
         document.getElementById('user-display').innerHTML = "สวัสดี " + playerName;
       }
-    } catch(e) { console.error("LIFF Init Error", e); }
+    } catch(e) {}
     document.getElementById('loading-page').classList.add('hidden');
     document.getElementById('start-page').classList.remove('hidden');
   }
@@ -151,16 +200,7 @@
 
   function saveToSheet() {
     const payload = { Name: playerName, Score: score, Q1_Answer: userAnswers[0] || "", Q2_Answer: userAnswers[1] || "", Q3_Answer: userAnswers[2] || "", Q4_Answer: userAnswers[3] || "" };
-    
-    // ลองส่งแบบ Fetch ปกติเพื่อดู Error
-    fetch(SCRIPT_URL, { 
-      method: 'POST', 
-      mode: 'no-cors', 
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload) 
-    })
-    .then(() => console.log("Data sent to script successfully (no-cors mode)"))
-    .catch(err => console.error("Fetch Error:", err));
+    fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) }).catch(e => {});
   }
 
   window.onload = initLIFF;
