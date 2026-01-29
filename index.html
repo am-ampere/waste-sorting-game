@@ -20,13 +20,13 @@
     }
     .hidden { display: none !important; }
 
-    /* ส่วนหน้าโหลดที่เตรียมไว้ */
+    /* หน้าโหลดแบบตัวจิ๋วตามสั่ง */
     #loading-page {
       position: fixed; top: 0; left: 0; width: 100%; height: 100%;
       background: var(--bg-light); display: flex; flex-direction: column;
       justify-content: center; align-items: center; z-index: 99;
     }
-    .title-emoji { font-size: 3rem; margin-bottom: 10px; }
+    .loading-emoji { font-size: 2rem; margin-bottom: 5px; } /* ปรับขนาด emoji ⌛ */
 
     img { max-width: 100%; height: auto !important; background: transparent !important; display: block; margin: 0 auto; }
     .main-logo { width: 140px; }
@@ -45,8 +45,11 @@
       width: 100%; background: #ffffff; border: none; padding: 14px; 
       margin: 8px 0; border-radius: 50px; font-size: 1.1rem; 
       color: var(--primary-green); font-weight: 500; cursor: pointer;
-      box-shadow: 0 3px 10px rgba(0,0,0,0.06);
+      box-shadow: 0 3px 10px rgba(0,0,0,0.06); position: relative;
     }
+    
+    /* สัญลักษณ์ถูก/ผิด บนปุ่ม */
+    .icon-status { position: absolute; right: 20px; top: 50%; transform: translateY(-50%); font-size: 1.5rem; }
 
     .feedback-area { min-height: 120px; margin-top: 10px; visibility: hidden; }
     .feedback-area.active { visibility: visible; }
@@ -60,7 +63,7 @@
 <body>
 
 <div id="loading-page">
-  <div class="title-emoji">⌛</div>
+  <div class="loading-emoji">⌛</div>
   <p style="font-size: 1.3rem;">กำลังเตรียมความพร้อมเพื่อโลกสีเขียว...</p>
 </div>
 
@@ -106,12 +109,42 @@
 <script>
   const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzjA_-iFEqrdTJzHlngMAIg1HQ7b0Bhot8eOHvRvShzmxHgCgGkngfD7CQOmSr50viz/exec";
   let playerName = "ผู้เล่น";
+  let currentStep = 0, score = 0, userAnswers = [];
 
   const questions = [
-    { q: "ขวดพลาสติก<br>ควรทิ้งถังไหน?", options: ["ถังขยะรีไซเคิล", "ถังขยะทั่วไป", "ถังซัมจั๋ง"], answer: 0, cMsg: "อื้อหือ นี่มันมือปราบขยะ!", wMsg: "ผิด! แยกผิดชีวิตเปลี่ยน", emojis: ["🌱", "😈"] },
-    { q: "น้ำหมด น้ำแข็งเหลือ<br>ทิ้งยังไงดี?", options: ["ทิ้งด้วยกันไปเลย", "แยกน้ำ/น้ำแข็ง ทิ้งคนละถัง", "กินแก้วลงไป"], answer: 1, cMsg: "แยกขยะโหด เหมือนโกรธโลกร้อน", wMsg: "ผิด! เทน้ำออกด้วย มันเปียกวุ้ย", emojis: ["👍", "😈"] },
-    { q: "ไม้เสียบลูกชิ้น<br>ทิ้งยังไงดี?", options: ["เสียบคนข้างๆ", "เสียบข้างหลัง ทะลุถึงหัวใจ", "ทิ้งลงถังไม้เสียบ"], answer: 2, cMsg: "แยกเก่งจน ขยะขนลุก!", wMsg: "ผิด! ไม่ทำร้ายคนอื่นโน๊ะ", emojis: ["😍", "😈"] },
-    { q: "ขยะเศษอาหาร<br>ทิ้งยังไงดี?", options: ["เทใส่ถ้วยเพื่อน", "เก็บไว้ดูต่างหน้า", "ทิ้งลงถังขยะเศษอาหาร"], answer: 2, cMsg: "สกิลแยกขยะ คือโฮ่ง!", wMsg: "ผิด! ดูของแฟนเก่า ยังเศร้าไม่พอหรอ", emojis: ["🙌", "🤔"] }
+    { 
+      q: "ขวดพลาสติก<br>ควรทิ้งถังไหน?", 
+      options: ["ถังขยะรีไซเคิล", "ถังขยะทั่วไป", "ถังซัมจั๋ง"], 
+      answer: 0,
+      cMsg: "อื้อหือ นี่มันมือปราบขยะ!", 
+      // แก้ไขคำตอบตามรูปภาพที่ส่งมา
+      wMsgs: ["ผิด! แยกผิดชีวิตเปลี่ยน", "ผิด! ไปชมพูทวีปเลยไป๊"], 
+      emojis: ["🌱", "😈"] 
+    },
+    { 
+      q: "น้ำหมด น้ำแข็งเหลือ<br>ทิ้งยังไงดี?", 
+      options: ["ทิ้งด้วยกันไปเลย", "แยกน้ำ/น้ำแข็ง ทิ้งคนละถัง", "กินแก้วลงไป"], 
+      answer: 1, 
+      cMsg: "แยกขยะโหด เหมือนโกรธโลกร้อน", 
+      wMsgs: ["ผิด! เทน้ำออกด้วย มันเปียกวุ้ย", "ผิด! ระวังแก้วติดคอ"], 
+      emojis: ["👍", "😈"] 
+    },
+    { 
+      q: "ไม้เสียบลูกชิ้น<br>ทิ้งยังไงดี?", 
+      options: ["เสียบคนข้างๆ", "เสียบข้างหลัง ทะลุถึงหัวใจ", "ทิ้งลงถังไม้เสียบ"], 
+      answer: 2, 
+      cMsg: "แยกเก่งจน ขยะขนลุก!", 
+      wMsgs: ["ผิด! ไม่ทำร้ายคนอื่นโน๊ะ", "ผิด! จุดอ่อนของช้านนน อยู่ตรงที่หัวจั๊ยยย"], 
+      emojis: ["😍", "😈"] 
+    },
+    { 
+      q: "ขยะเศษอาหาร<br>ทิ้งยังไงดี?", 
+      options: ["เทใส่ถ้วยเพื่อน", "เก็บไว้ดูต่างหน้า", "ทิ้งลงถังขยะเศษอาหาร"], 
+      answer: 2, 
+      cMsg: "สกิลแยกขยะ คือโฮ่ง!", 
+      wMsgs: ["เอ้า! ทำไมทำอย่างนั้น", "ผิด! ดูของแฟนเก่า ยังเศร้าไม่พอหรอ"], 
+      emojis: ["🙌", "🤔"] 
+    }
   ];
 
   const results = {
@@ -131,7 +164,6 @@
         document.getElementById('user-display').innerHTML = "สวัสดี " + playerName;
       }
     } catch(e) {}
-    // ปิดหน้าโหลด แล้วโชว์หน้าแรก
     document.getElementById('loading-page').classList.add('hidden');
     document.getElementById('start-page').classList.remove('hidden');
   }
@@ -148,10 +180,11 @@
     const container = document.getElementById('choices-container');
     container.innerHTML = "";
     document.getElementById('feedback-area').classList.remove('active');
+
     data.options.forEach((opt, i) => {
       const btn = document.createElement('button');
       btn.className = 'choice-btn';
-      btn.innerText = opt;
+      btn.innerHTML = `${opt} <span class="icon-status" id="icon-${i}"></span>`;
       btn.onclick = () => checkAnswer(i);
       container.appendChild(btn);
     });
@@ -161,11 +194,27 @@
     const data = questions[currentStep];
     const isCorrect = (idx === data.answer);
     if(isCorrect) score++;
-    document.getElementById('feedback-msg').innerText = isCorrect ? data.cMsg : data.wMsg;
+
+    // แสดงสัญลักษณ์ถูก/ผิด
+    document.getElementById(`icon-${idx}`).innerHTML = isCorrect ? "✔️" : "❌";
+    
+    // เลือกข้อความผิดตามตัวเลือกที่กด
+    let msg = "";
+    if(isCorrect) {
+      msg = data.cMsg;
+    } else {
+      // ถ้าเลือกตัวเลือกแรกที่ผิด (idx 0 หรือ 1 ตามตำแหน่ง) ให้ดึง wMsgs ตามลำดับ
+      const wrongIdx = data.options.filter((_, index) => index !== data.answer).indexOf(data.options[idx]);
+      msg = data.wMsgs[wrongIdx] || data.wMsgs[0];
+    }
+
+    document.getElementById('feedback-msg').innerText = msg;
     document.getElementById('feedback-msg').style.color = isCorrect ? "var(--primary-green)" : "#b52424";
     document.getElementById('feedback-emoji').innerText = isCorrect ? data.emojis[0] : data.emojis[1];
     document.getElementById('feedback-area').classList.add('active');
+    
     document.querySelectorAll('.choice-btn').forEach(b => b.disabled = true);
+    
     setTimeout(() => {
       currentStep++;
       if(currentStep < questions.length) showQuestion();
