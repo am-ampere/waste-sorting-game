@@ -9,50 +9,23 @@
   <style>
     :root { --primary-green: #067957; --bg-light: #ebf7ef; }
     * { font-family: 'Prompt', sans-serif !important; box-sizing: border-box; }
-    body { 
-      margin: 0; background-color: var(--bg-light); color: var(--primary-green); 
-      height: 100vh; overflow: hidden;
-    }
-    .container { 
-      width: 100%; height: 100vh; display: flex; flex-direction: column; 
-      align-items: center; justify-content: space-between; 
-      padding: 30px 25px; text-align: center;
-    }
+    body { margin: 0; background-color: var(--bg-light); color: var(--primary-green); height: 100vh; overflow: hidden; }
+    .container { width: 100%; height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: space-between; padding: 30px 25px; text-align: center; }
     .hidden { display: none !important; }
-
-    /* หน้าโหลดขนาดจิ๋ว 1.3rem */
-    #loading-page {
-      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-      background: var(--bg-light); display: flex; flex-direction: column;
-      justify-content: center; align-items: center; z-index: 99;
-    }
+    #loading-page { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-light); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 99; }
     .loading-emoji { font-size: 2rem; margin-bottom: 5px; }
-
-    img { max-width: 100%; height: auto !important; background: transparent !important; display: block; margin: 0 auto; }
+    img { max-width: 100%; height: auto !important; display: block; margin: 0 auto; }
     .main-logo { width: 140px; }
     .center-img { width: 120px; margin: 15px 0; }
     .partner-logos { width: 160px; }
-
     h1 { font-size: 1.8rem; font-weight: 700; margin: 10px 0; line-height: 1.2; }
-    
-    .game-content { 
-      flex-grow: 1; display: flex; flex-direction: column; 
-      justify-content: flex-start; width: 100%; padding-top: 20px;
-    }
-
+    .game-content { flex-grow: 1; display: flex; flex-direction: column; justify-content: flex-start; width: 100%; padding-top: 20px; }
     .choices-stack { width: 100%; max-width: 320px; margin: 0 auto; }
-    .choice-btn { 
-      width: 100%; background: #ffffff; border: none; padding: 14px; 
-      margin: 8px 0; border-radius: 50px; font-size: 1.1rem; 
-      color: var(--primary-green); font-weight: 500; cursor: pointer;
-      box-shadow: 0 3px 10px rgba(0,0,0,0.06); outline: none;
-    }
-
+    .choice-btn { width: 100%; background: #ffffff; border: none; padding: 14px; margin: 8px 0; border-radius: 50px; font-size: 1.1rem; color: var(--primary-green); font-weight: 500; cursor: pointer; box-shadow: 0 3px 10px rgba(0,0,0,0.06); outline: none; }
     .feedback-area { min-height: 120px; margin-top: 10px; visibility: hidden; }
     .feedback-area.active { visibility: visible; }
     .feedback-text { font-weight: 700; font-size: 1.4rem; }
     .emoji-display { font-size: 3.5rem; margin-top: 5px; }
-
     .score-big { font-size: 5.5rem; font-weight: 700; line-height: 1; margin: 0; }
     .btn-start { background: var(--primary-green); color: #fff; border: none; padding: 12px 60px; border-radius: 50px; font-size: 1.3rem; font-weight: 600; cursor: pointer; }
   </style>
@@ -104,54 +77,17 @@
 </div>
 
 <script>
-  // URL ล่าสุดที่คุณส่งมา (เชื่อมกับแผ่นงาน Responses)
   const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz-5DvD7l-KbqG_X4IpI32FPrkQRtm6hQ-ZNc2s9MiAyiB118lMm280rJqce7r1-YYk/exec";
-  
-  let playerName = "ผู้เล่น";
-  let currentStep = 0, score = 0, userAnswers = [];
+  let playerName = "ผู้เล่น", currentStep = 0, score = 0, userAnswers = [];
 
   const questions = [
-    { 
-      q: "ขวดพลาสติก<br>ควรทิ้งถังไหน?", 
-      options: ["ถังขยะรีไซเคิล", "ถังขยะทั่วไป", "ถังซัมจั๋ง"], 
-      answer: 0,
-      cMsg: "อื้อหือ นี่มันมือปราบขยะ!", 
-      wMsgs: ["ผิด! แยกผิดชีวิตเปลี่ยน", "ผิด! ไปชมพูทวีปเลยไป๊"], 
-      emojis: ["🌱", "😈"] 
-    },
-    { 
-      q: "น้ำหมด น้ำแข็งเหลือ<br>ทิ้งยังไงดี?", 
-      options: ["ทิ้งด้วยกันไปเลย", "แยกน้ำ/น้ำแข็ง ทิ้งคนละถัง", "กินแก้วลงไป"], 
-      answer: 1, 
-      cMsg: "แยกขยะโหด เหมือนโกรธโลกร้อน", 
-      wMsgs: ["ผิด! เทน้ำออกด้วย มันเปียกวุ้ย", "ผิด! ระวังแก้วติดคอ"], 
-      emojis: ["👍", "😈"] 
-    },
-    { 
-      q: "ไม้เสียบลูกชิ้น<br>ทิ้งยังไงดี?", 
-      options: ["เสียบคนข้างๆ", "เสียบข้างหลัง ทะลุถึงหัวใจ", "ทิ้งลงถังไม้เสียบ"], 
-      answer: 2, 
-      cMsg: "แยกเก่งจน ขยะขนลุก!", 
-      wMsgs: ["ผิด! ไม่ทำร้ายคนอื่นโน๊ะ", "ผิด! จุดอ่อนของช้านนน อยู่ตรงที่หัวจั๊ยยย"], 
-      emojis: ["😍", "😈"] 
-    },
-    { 
-      q: "ขยะเศษอาหาร<br>ทิ้งยังไงดี?", 
-      options: ["เทใส่ถ้วยเพื่อน", "เก็บไว้ดูต่างหน้า", "ทิ้งลงถังขยะเศษอาหาร"], 
-      answer: 2, 
-      cMsg: "สกิลแยกขยะ คือโฮ่ง!", 
-      wMsgs: ["เอ้า! ทำไมทำอย่างนั้น", "ผิด! ดูของแฟนเก่า ยังเศร้าไม่พอหรอ"], 
-      emojis: ["🙌", "🤔"] 
-    }
+    { q: "ขวดพลาสติก<br>ควรทิ้งถังไหน?", options: ["ถังขยะรีไซเคิล", "ถังขยะทั่วไป", "ถังซัมจั๋ง"], answer: 0, cMsg: "อื้อหือ นี่มันมือปราบขยะ!", wMsgs: ["ผิด! แยกผิดชีวิตเปลี่ยน", "ผิด! ไปชมพูทวีปเลยไป๊"], emojis: ["🌱", "😈"] },
+    { q: "น้ำหมด น้ำแข็งเหลือ<br>ทิ้งยังไงดี?", options: ["ทิ้งด้วยกันไปเลย", "แยกน้ำ/น้ำแข็ง ทิ้งคนละถัง", "กินแก้วลงไป"], answer: 1, cMsg: "แยกขยะโหด เหมือนโกรธโลกร้อน", wMsgs: ["ผิด! เทน้ำออกด้วย มันเปียกวุ้ย", "ผิด! ระวังแก้วติดคอ"], emojis: ["👍", "😈"] },
+    { q: "ไม้เสียบลูกชิ้น<br>ทิ้งยังไงดี?", options: ["เสียบคนข้างๆ", "เสียบข้างหลัง ทะลุถึงหัวใจ", "ทิ้งลงถังไม้เสียบ"], answer: 2, cMsg: "แยกเก่งจน ขยะขนลุก!", wMsgs: ["ผิด! ไม่ทำร้ายคนอื่นโน๊ะ", "ผิด! จุดอ่อนของช้านนน อยู่ตรงที่หัวจั๊ยยย"], emojis: ["😍", "😈"] },
+    { q: "ขยะเศษอาหาร<br>ทิ้งยังไงดี?", options: ["เทใส่ถ้วยเพื่อน", "เก็บไว้ดูต่างหน้า", "ทิ้งลงถังขยะเศษอาหาร"], answer: 2, cMsg: "สกิลแยกขยะ คือโฮ่ง!", wMsgs: ["เอ้า! ทำไมทำอย่างนั้น", "ผิด! ดูของแฟนเก่า ยังเศร้าไม่พอหรอ"], emojis: ["🙌", "🤔"] }
   ];
 
-  const results = {
-    0: { title: "เหลือจะเชื่อ!", desc: "สงสัยนอนน้อย รู้สึกอ่อมแทน", emoji: "😔" },
-    1: { title: "ทวนความรู้สุด!", desc: "เกือบละ เกือบผิดหมดทุกข้อละ", emoji: "🙋‍♀️" },
-    2: { title: "จะลำแบ้!", desc: "ผิดขนาดนี้ พี่ถังขยะร้องไห้แล้ว", emoji: "😔" },
-    3: { title: "ใกล้ความจริง!", desc: "แยกไม่เนียน ไปเรียนมาใหม่", emoji: "😘" },
-    4: { title: "ทำได้แล้ว!", desc: "เก่งขนาดนี้ พี่ซาเล้งมีหนาว", emoji: "😍" }
-  };
+  const results = { 0: { title: "เหลือจะเชื่อ!", desc: "สงสัยนอนน้อย รู้สึกอ่อมแทน", emoji: "😔" }, 1: { title: "ทวนความรู้สุด!", desc: "เกือบละ เกือบผิดหมดทุกข้อละ", emoji: "🙋‍♀️" }, 2: { title: "จะลำแบ้!", desc: "ผิดขนาดนี้ พี่ถังขยะร้องไห้แล้ว", emoji: "😔" }, 3: { title: "ใกล้ความจริง!", desc: "แยกไม่เนียน ไปเรียนมาใหม่", emoji: "😘" }, 4: { title: "ทำได้แล้ว!", desc: "เก่งขนาดนี้ พี่ซาเล้งมีหนาว", emoji: "😍" } };
 
   async function initLIFF() {
     try {
@@ -161,16 +97,12 @@
         playerName = profile.displayName;
         document.getElementById('user-display').innerHTML = "สวัสดี " + playerName;
       }
-    } catch(e) {}
+    } catch(e) { console.error("LIFF Init Error", e); }
     document.getElementById('loading-page').classList.add('hidden');
     document.getElementById('start-page').classList.remove('hidden');
   }
 
-  function startGame() {
-    document.getElementById('start-page').classList.add('hidden');
-    document.getElementById('game-page').classList.remove('hidden');
-    showQuestion();
-  }
+  function startGame() { document.getElementById('start-page').classList.add('hidden'); document.getElementById('game-page').classList.remove('hidden'); showQuestion(); }
 
   function showQuestion() {
     const data = questions[currentStep];
@@ -178,7 +110,6 @@
     const container = document.getElementById('choices-container');
     container.innerHTML = "";
     document.getElementById('feedback-area').classList.remove('active');
-
     data.options.forEach((opt, i) => {
       const btn = document.createElement('button');
       btn.className = 'choice-btn';
@@ -193,16 +124,12 @@
     const isCorrect = (idx === data.answer);
     userAnswers.push(data.options[idx]);
     if(isCorrect) score++;
-
     let msg = isCorrect ? data.cMsg : (data.wMsgs[data.options.filter((_, index) => index !== data.answer).indexOf(data.options[idx])] || data.wMsgs[0]);
-
     document.getElementById('feedback-msg').innerText = msg;
     document.getElementById('feedback-msg').style.color = isCorrect ? "var(--primary-green)" : "#b52424";
     document.getElementById('feedback-emoji').innerText = isCorrect ? data.emojis[0] : data.emojis[1];
     document.getElementById('feedback-area').classList.add('active');
-    
     document.querySelectorAll('.choice-btn').forEach(b => b.disabled = true);
-    
     setTimeout(() => {
       currentStep++;
       if(currentStep < questions.length) showQuestion();
@@ -223,22 +150,17 @@
   }
 
   function saveToSheet() {
-    // Key ตรงตามหัวตาราง: Name, Score, Q1_Answer, Q2_Answer, Q3_Answer, Q4_Answer
-    const payload = {
-      Name: playerName,
-      Score: score,
-      Q1_Answer: userAnswers[0] || "",
-      Q2_Answer: userAnswers[1] || "",
-      Q3_Answer: userAnswers[2] || "",
-      Q4_Answer: userAnswers[3] || ""
-    };
-
+    const payload = { Name: playerName, Score: score, Q1_Answer: userAnswers[0] || "", Q2_Answer: userAnswers[1] || "", Q3_Answer: userAnswers[2] || "", Q4_Answer: userAnswers[3] || "" };
+    
+    // ลองส่งแบบ Fetch ปกติเพื่อดู Error
     fetch(SCRIPT_URL, { 
       method: 'POST', 
       mode: 'no-cors', 
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload) 
-    }).catch(e => console.error(e));
+    })
+    .then(() => console.log("Data sent to script successfully (no-cors mode)"))
+    .catch(err => console.error("Fetch Error:", err));
   }
 
   window.onload = initLIFF;
