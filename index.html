@@ -7,88 +7,72 @@
   <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600;700&display=swap" rel="stylesheet">
   <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
   <style>
-    :root { --primary-green: #067957; --bg-light: #ebf7ef; }
+    :root { --primary-green: #067957; }
     * { font-family: 'Prompt', sans-serif !important; box-sizing: border-box; }
-    body { margin: 0; background-color: var(--bg-light); color: var(--primary-green); height: 100vh; overflow: hidden; }
+    
+    body { 
+      margin: 0; 
+      /* กลับมาใช้ Background Linear Gradient ตามคำขอ */
+      background: linear-gradient(135deg, #e9f7ef 0%, #b2d8c1 100%); 
+      color: var(--primary-green); 
+      height: 100vh; 
+      overflow: hidden; 
+    }
 
-    /* ปรับ Layout ให้สมดุลตามสเกล PDF */
     .container { 
       width: 100%; height: 100vh; display: flex; flex-direction: column; 
       align-items: center; justify-content: space-between; 
-      padding: 40px 25px 30px 25px; /* ระยะห่างขอบจอ */
-      text-align: center;
+      padding: 40px 25px 30px 25px; text-align: center;
     }
 
     .hidden { display: none !important; }
 
-    /* Logo บน (อิงสเกล 222px จากบน และกว้าง 432px ในจอใหญ่) */
-    .main-logo { 
-      width: 160px; /* ขนาดปรับลดเพื่อความสวยงามบนจอเล็กแต่คงสัดส่วนเดิม */
-      height: auto !important;
-      margin-top: 10px;
-      object-fit: contain;
+    img { 
+      max-width: 100%; height: auto !important; object-fit: contain; 
+      display: block; margin: 0 auto; background: transparent !important;
       image-rendering: -webkit-optimize-contrast;
     }
 
-    /* รูปการ์ตูนตรงกลางหน้าแรก */
-    .center-img { 
-      width: 150px; 
-      height: auto !important;
-      margin: 15px 0; 
-    }
+    /* --- การจัดการ Logo แยกตามหน้า --- */
+    .main-logo { width: 140px; margin-top: 10px; } /* ขนาดสำหรับหน้าเกมและสรุปผล */
+    #start-page .main-logo { width: 190px; }      /* หน้าแรกปรับให้ใหญ่ขึ้นตามสั่ง */
 
-    /* Footer Partner (อิงสเกล 421px และห่างขอบล่าง 116px) */
-    .footer { margin-bottom: 10px; }
-    .partner-logos { 
-      width: 220px; 
-      height: auto !important;
-      image-rendering: -webkit-optimize-contrast;
-    }
+    /* ไอคอนขวดหน้าแรก (ปรับให้เล็กลง) */
+    .center-img { width: 110px; margin: 15px 0; } 
 
-    /* ปุ่มเริ่มเกม (อิงสเกล 700px จาก PDF) */
+    /* Footer (คงเดิมทุกหน้า) */
+    .partner-logos { width: 220px; margin-bottom: 10px; }
+
+    /* UI Elements */
     .btn-start { 
-      background: var(--primary-green); 
-      color: #fff; 
-      border: none; 
-      width: 100%; 
-      max-width: 280px; /* เทียบเท่าสเกล 700px ในจอใหญ่ */
-      padding: 15px; 
-      border-radius: 50px; 
-      font-size: 1.3rem; 
-      font-weight: 600; 
-      cursor: pointer;
+      background: var(--primary-green); color: #fff; border: none; 
+      width: 100%; max-width: 280px; padding: 15px; border-radius: 50px; 
+      font-size: 1.3rem; font-weight: 600; cursor: pointer;
       box-shadow: 0 4px 15px rgba(6, 121, 87, 0.3);
     }
 
-    /* ปุ่มเลือกตอบ (อิงสเกลความสูง 143px และห่าง 61px) */
     .choice-btn { 
-      width: 100%; 
-      max-width: 320px; 
-      background: #ffffff; 
-      border: none; 
-      padding: 16px; 
-      margin: 10px 0; 
-      border-radius: 50px; 
-      font-size: 1.1rem; 
-      color: var(--primary-green); 
-      font-weight: 500; 
+      width: 100%; max-width: 320px; background: #ffffff; border: none; 
+      padding: 16px; margin: 10px 0; border-radius: 50px; 
+      font-size: 1.1rem; color: var(--primary-green); font-weight: 500; 
       box-shadow: 0 3px 10px rgba(0,0,0,0.06);
     }
 
     h1 { font-size: 1.7rem; font-weight: 700; margin: 10px 0; line-height: 1.2; }
-    .game-content { flex-grow: 1; display: flex; flex-direction: column; justify-content: flex-start; width: 100%; padding-top: 20px; }
-    .feedback-area { min-height: 110px; margin-top: 10px; visibility: hidden; }
-    .feedback-area.active { visibility: visible; }
-    .score-big { font-size: 5rem; font-weight: 700; line-height: 1; margin: 0; }
-
-    #loading-page { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-light); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 99; }
+    .score-big { font-size: 5.5rem; font-weight: 700; line-height: 1; margin: 0; }
+    
+    #loading-page { 
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+      background: #e9f7ef; display: flex; flex-direction: column; 
+      justify-content: center; align-items: center; z-index: 99; 
+    }
   </style>
 </head>
 <body>
 
 <div id="loading-page">
   <div style="font-size: 2rem;">⌛</div>
-  <p style="font-size: 1.2rem;">กำลังเตรียมความพร้อม...</p>
+  <p style="font-size: 1.2rem;">กำลังเตรียมความพร้อมเพื่อโลกสีเขียว...</p>
 </div>
 
 <div id="start-page" class="container hidden">
@@ -104,10 +88,10 @@
 
 <div id="game-page" class="container hidden">
   <img src="https://i.postimg.cc/FHwJxdCD/1-Logo-yaek-KUlok.png" class="main-logo">
-  <div class="game-content">
+  <div style="flex-grow: 1; width: 100%; padding-top: 20px;">
     <h1 id="question-text"></h1>
-    <div id="choices-container" class="choices-stack"></div>
-    <div id="feedback-area" class="feedback-area">
+    <div id="choices-container"></div>
+    <div id="feedback-area" style="min-height: 110px; margin-top: 10px; visibility: hidden;">
       <div id="feedback-msg" style="font-weight: 700; font-size: 1.3rem;"></div>
       <div id="feedback-emoji" style="font-size: 3rem; margin-top: 5px;"></div>
     </div>
@@ -119,14 +103,18 @@
   <img src="https://i.postimg.cc/FHwJxdCD/1-Logo-yaek-KUlok.png" class="main-logo">
   <div>
     <p id="final-score" class="score-big">0/4</p>
-    <p id="result-user-name" style="font-weight: 600; font-size: 1.2rem; margin: 5px 0;"></p>
-    <h1 id="result-title"></h1>
-    <p id="result-desc" style="font-weight: 600; color: #555;"></p>
-    <p style="font-size: 0.9rem; margin-top: 10px;">การแยกขยะวันนี้ คุณช่วยโลกได้เยอะเลยล่ะ!</p>
-    <div id="result-emoji" style="font-size: 3.5rem; margin-top: 10px;"></div>
+    <p id="result-user-name" style="font-weight: 600; font-size: 1.2rem; margin-top: 5px;"></p>
+    
+    <h1 id="result-title" style="margin-top: 15px;"></h1>
+    <p id="result-desc" style="font-weight: 600; font-size: 1rem;"></p>
+    
+    <p style="font-size: 0.95rem; margin-top: 15px; color: var(--primary-green);">
+      การแยกขยะวันนี้ คุณช่วยโลกได้เยอะเลยล่ะ!
+    </p>
+    <div id="result-emoji" style="font-size: 3.5rem; margin-top: 5px;"></div>
   </div>
   <div class="footer">
-    <p style="font-weight: 700;">ขอบคุณที่ช่วยกัน 🌱 🌎</p>
+    <p style="font-weight: 700; margin-bottom: 5px;">ขอบคุณที่ช่วยกัน 🌱 🌎</p>
     <img src="https://i.postimg.cc/tJgTbpm4/2-th-ngth-kth.png" class="partner-logos">
   </div>
 </div>
@@ -156,7 +144,7 @@
       if (liff.isLoggedIn()) {
         const profile = await liff.getProfile();
         playerName = profile.displayName;
-        document.getElementById('user-display').innerHTML = "สวัสดี " + playerName;
+        document.getElementById('user-display').innerHTML = "สวัสดี คุณ " + playerName;
       }
     } catch(e) {}
     document.getElementById('loading-page').classList.add('hidden');
@@ -174,7 +162,7 @@
     document.getElementById('question-text').innerHTML = data.q;
     const container = document.getElementById('choices-container');
     container.innerHTML = "";
-    document.getElementById('feedback-area').classList.remove('active');
+    document.getElementById('feedback-area').style.visibility = "hidden";
     data.options.forEach((opt, i) => {
       const btn = document.createElement('button');
       btn.className = 'choice-btn';
@@ -189,11 +177,13 @@
     const isCorrect = (idx === data.answer);
     userAnswers.push(data.options[idx]);
     if(isCorrect) score++;
-    let msg = isCorrect ? data.cMsg : (data.wMsgs[data.options.filter((_, index) => index !== data.answer).indexOf(data.options[idx])] || data.wMsgs[0]);
-    document.getElementById('feedback-msg').innerText = msg;
+    
+    const fArea = document.getElementById('feedback-area');
+    document.getElementById('feedback-msg').innerText = isCorrect ? data.cMsg : (data.wMsgs[0]);
     document.getElementById('feedback-msg').style.color = isCorrect ? "var(--primary-green)" : "#b52424";
     document.getElementById('feedback-emoji').innerText = isCorrect ? data.emojis[0] : data.emojis[1];
-    document.getElementById('feedback-area').classList.add('active');
+    fArea.style.visibility = "visible";
+    
     document.querySelectorAll('.choice-btn').forEach(b => b.disabled = true);
     setTimeout(() => {
       currentStep++;
