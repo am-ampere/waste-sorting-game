@@ -86,4 +86,125 @@
     <h1 id="question-text"></h1>
     <div id="choices-container"></div>
     <div id="feedback-area" style="min-height: 110px; margin-top: 10px; visibility: hidden;">
-      <div id
+      <div id="feedback-msg" style="font-weight: 700; font-size: 1.3rem;"></div>
+      <div id="feedback-emoji" style="font-size: 3rem; margin-top: 5px;"></div>
+    </div>
+  </div>
+  <div class="footer"><img src="https://i.postimg.cc/tJgTbpm4/2-th-ngth-kth.png" class="partner-logos"></div>
+</div>
+
+<div id="result-page" class="container hidden">
+  <img src="https://i.postimg.cc/FHwJxdCD/1-Logo-yaek-KUlok.png" class="main-logo">
+  
+  <div style="flex-grow: 1; display: flex; flex-direction: column; justify-content: center; padding-top: 50px;">
+    <p id="final-score" class="score-big">0/4</p>
+    <p id="result-user-name" style="font-weight: 600; font-size: 1.3rem; margin: 5px 0;"></p>
+    <h1 id="result-title" style="margin: 5px 0;"></h1>
+    <p id="result-desc" style="font-weight: 500; font-size: 1.1rem; margin: 0;"></p>
+    <div id="result-emoji" style="font-size: 3.5rem; margin: 10px 0;"></div>
+    
+    <div style="margin-top: 30px; line-height: 1.6;">
+      <p style="font-weight: 700; font-size: 1.15rem; margin: 0;">🌱 ขอบคุณที่ช่วยกัน 🌍</p>
+      <p style="font-size: 1rem; margin: 0;">การแยกขยะวันนี้</p>
+      <p style="font-size: 1rem; margin: 0;">คุณช่วยโลกได้เยอะเลยล่ะ!</p>
+    </div>
+  </div>
+
+  <div class="footer">
+    <img src="https://i.postimg.cc/tJgTbpm4/2-th-ngth-kth.png" class="partner-logos">
+  </div>
+</div>
+
+<script>
+  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz-5DvD7l-KbqG_X4IpI32FPrkQRtm6hQ-ZNc2s9MiAyiB118lMm280rJqce7r1-YYk/exec";
+  let playerName = "ผู้เล่น", currentStep = 0, score = 0, userAnswers = [];
+
+  const questions = [
+    { q: "ขวดพลาสติก<br>ควรทิ้งถังไหน?", options: ["ถังขยะรีไซเคิล", "ถังขยะทั่วไป", "ถังซัมจั๋ง"], answer: 0, cMsg: "อื้อหือ นี่มันมือปราบขยะ!", wMsgs: ["ผิด! แยกผิดชีวิตเปลี่ยน"], emojis: ["🌱", "😈"] },
+    { q: "น้ำหมด น้ำแข็งเหลือ<br>ทิ้งยังไงดี?", options: ["ทิ้งด้วยกันไปเลย", "แยกน้ำ/น้ำแข็ง ทิ้งคนละถัง", "กินแก้วลงไป"], answer: 1, cMsg: "แยกขยะโหด เหมือนโกรธโลกร้อน", wMsgs: ["ผิด! เทน้ำออกด้วย มันเปียกวุ้ย"], emojis: ["👍", "😈"] },
+    { q: "ไม้เสียบลูกชิ้น<br>ทิ้งยังไงดี?", options: ["เสียบคนข้างๆ", "เสียบข้างหลัง ทะลุถึงหัวใจ", "ทิ้งลงถังไม้เสียบ"], answer: 2, cMsg: "แยกเก่งจน ขยะขนลุก!", wMsgs: ["ผิด! ไม่ทำร้ายคนอื่นโน๊ะ"], emojis: ["😍", "😈"] },
+    { q: "ขยะเศษอาหาร<br>ทิ้งยังไงดี?", options: ["เทใส่ถ้วยเพื่อน", "เก็บไว้ดูต่างหน้า", "ทิ้งลงถังขยะเศษอาหาร"], answer: 2, cMsg: "สกิลแยกขยะ คือโฮ่ง!", wMsgs: ["เอ้า! ทำไมทำอย่างนั้น"], emojis: ["🙌", "🤔"] }
+  ];
+
+  const results = {
+    0: { title: "เหลือจะเชื่อ!", desc: "สงสัยนอนน้อย รู้สึกนอยแทน", emoji: "😔" },
+    1: { title: "เกือบละ!", desc: "ทวนความรู้หน่อยนะ เพื่อโลกเรา", emoji: "🙋‍♀️" },
+    2: { title: "สู้เขา!", desc: "อีกนิดเดียว จะแยกได้เป๊ะแล้ว", emoji: "😔" },
+    3: { title: "ใกล้ความจริง!", desc: "แยกเก่งแล้วนะเนี่ย!", emoji: "😘" },
+    4: { title: "ยอดเยี่ยม!", desc: "เก่งขนาดนี้ พี่ซาเล้งมีหนาว", emoji: "😍" }
+  };
+
+  async function initLIFF() {
+    try {
+      await liff.init({ liffId: "2008938028-gCqozVV5" });
+      if (liff.isLoggedIn()) {
+        const profile = await liff.getProfile();
+        playerName = profile.displayName;
+        document.getElementById('user-display').innerHTML = "สวัสดี คุณ " + playerName;
+      }
+    } catch(e) {}
+    document.getElementById('loading-page').classList.add('hidden');
+    document.getElementById('start-page').classList.remove('hidden');
+  }
+
+  function startGame() { 
+    document.getElementById('start-page').classList.add('hidden'); 
+    document.getElementById('game-page').classList.remove('hidden'); 
+    showQuestion(); 
+  }
+
+  function showQuestion() {
+    const data = questions[currentStep];
+    document.getElementById('question-text').innerHTML = data.q;
+    const container = document.getElementById('choices-container');
+    container.innerHTML = "";
+    document.getElementById('feedback-area').style.visibility = "hidden";
+    data.options.forEach((opt, i) => {
+      const btn = document.createElement('button');
+      btn.className = 'choice-btn';
+      btn.innerText = opt;
+      btn.onclick = () => checkAnswer(i);
+      container.appendChild(btn);
+    });
+  }
+
+  function checkAnswer(idx) {
+    const data = questions[currentStep];
+    const isCorrect = (idx === data.answer);
+    userAnswers.push(data.options[idx]);
+    if(isCorrect) score++;
+    
+    document.getElementById('feedback-msg').innerText = isCorrect ? data.cMsg : data.wMsgs[0];
+    document.getElementById('feedback-msg').style.color = isCorrect ? "var(--primary-green)" : "#b52424";
+    document.getElementById('feedback-emoji').innerText = isCorrect ? data.emojis[0] : data.emojis[1];
+    document.getElementById('feedback-area').style.visibility = "visible";
+    
+    document.querySelectorAll('.choice-btn').forEach(b => b.disabled = true);
+    setTimeout(() => {
+      currentStep++;
+      if(currentStep < questions.length) showQuestion();
+      else finishGame();
+    }, 1800);
+  }
+
+  function finishGame() {
+    document.getElementById('game-page').classList.add('hidden');
+    document.getElementById('result-page').classList.remove('hidden');
+    const res = results[score];
+    document.getElementById('final-score').innerText = score + "/4";
+    document.getElementById('result-user-name').innerText = "คุณ " + playerName;
+    document.getElementById('result-title').innerText = res.title;
+    document.getElementById('result-desc').innerText = res.desc;
+    document.getElementById('result-emoji').innerText = res.emoji;
+    saveToSheet();
+  }
+
+  function saveToSheet() {
+    const payload = { Name: playerName, Score: score, Q1_Answer: userAnswers[0] || "", Q2_Answer: userAnswers[1] || "", Q3_Answer: userAnswers[2] || "", Q4_Answer: userAnswers[3] || "" };
+    fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) }).catch(e => {});
+  }
+
+  window.onload = initLIFF;
+</script>
+</body>
+</html>
