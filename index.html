@@ -155,3 +155,40 @@
     const data = questions[currentStep];
     const isCorrect = (idx === data.answer);
     const feedback = data.feedbacks[idx];
+    userAnswers.push(data.options[idx]);
+    if(isCorrect) score++;
+    const msgEl = document.getElementById('feedback-msg');
+    msgEl.innerHTML = feedback.msg;
+    msgEl.style.color = isCorrect ? "var(--primary-green)" : "#b52424";
+    document.getElementById('feedback-emoji').innerText = feedback.emoji;
+    document.getElementById('feedback-area').style.visibility = "visible";
+    document.querySelectorAll('.choice-btn').forEach(b => b.disabled = true);
+    
+    setTimeout(() => {
+      currentStep++;
+      if(currentStep < questions.length) showQuestion();
+      else finishGame();
+    }, 2000);
+  }
+
+  function finishGame() {
+    document.getElementById('game-page').classList.add('hidden');
+    document.getElementById('result-page').classList.remove('hidden');
+    const res = results[score];
+    document.getElementById('final-score').innerText = score + "/4";
+    document.getElementById('result-user-name').innerText = "คุณ " + playerName;
+    document.getElementById('result-title').innerText = res.title;
+    document.getElementById('result-desc').innerText = res.desc;
+    document.getElementById('result-emoji').innerText = res.emoji;
+    saveToSheet();
+  }
+
+  function saveToSheet() {
+    const payload = { Name: playerName, Score: score, Q1_Answer: userAnswers[0] || "", Q2_Answer: userAnswers[1] || "", Q3_Answer: userAnswers[2] || "", Q4_Answer: userAnswers[3] || "" };
+    fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) }).catch(e => {});
+  }
+
+  window.onload = initLIFF;
+</script>
+</body>
+</html>
