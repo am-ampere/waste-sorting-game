@@ -32,7 +32,7 @@
 
     /* ปรับปุ่มเริ่มเล่นเกมตามบรีฟ MKT */
     .btn-start { 
-      background: #ffffff; color: var(--primary-green); border: 2px solid var(--primary-green); 
+      background: #ffffff; color: var(--primary-green);
       width: 100%; max-width: 240px; /* เล็กลงเล็กน้อย */
       padding: 12px; border-radius: 50px; 
       font-size: 1.2rem; font-weight: 600; cursor: pointer;
@@ -131,7 +131,7 @@
     setTimeout(() => {
       document.getElementById('loading-page').classList.add('hidden');
       document.getElementById('start-page').classList.remove('hidden');
-    }, 500);
+    }, 300);
   }
 
   function startGame() { document.getElementById('start-page').classList.add('hidden'); document.getElementById('game-page').classList.remove('hidden'); showQuestion(); }
@@ -193,5 +193,3 @@
 </script>
 </body>
 </html>
-โ
-
